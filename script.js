@@ -260,29 +260,39 @@ function toggleHint(questionId) {
 // Progress tracking
 function updateProgress() {
     const form = document.getElementById('testForm');
-    const totalQuestions = 38;
-    let answered = 0;
+    if (!form) return;
     
-    // Count answered questions
-    form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked, select:not([value=""])').forEach(input => {
-        if (!input.hasAttribute('data-counted')) {
-            answered++;
-            input.setAttribute('data-counted', 'true');
-        }
-    });
+    const totalQuestions = 38;
     
     // Count unique answered questions
     const answeredQuestions = new Set();
-    form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+    
+    // Count radio buttons (True/False and multiple choice)
+    form.querySelectorAll('input[type="radio"]:checked').forEach(input => {
         const name = input.name.split('_')[0]; // Get question number
         answeredQuestions.add(name);
     });
-    form.querySelectorAll('select:not([value=""])').forEach(select => {
-        const name = select.name.split('_')[0];
-        answeredQuestions.add(name);
+    
+    // Count checkboxes (multiple answer questions)
+    form.querySelectorAll('input[type="checkbox"]:checked').forEach(input => {
+        const name = input.name.split('_')[0];
+        if (!answeredQuestions.has(name)) {
+            answeredQuestions.add(name);
+        }
     });
     
-    answered = answeredQuestions.size;
+    // Count selects - only if they have a value AND it's not the default empty option
+    form.querySelectorAll('select').forEach(select => {
+        if (select.value && select.value !== '' && 
+            select.value !== '--- Select ---' && 
+            select.value !== '---' &&
+            select.value !== '--- Select Option ---') {
+            const name = select.name.split('_')[0];
+            answeredQuestions.add(name);
+        }
+    });
+    
+    const answered = answeredQuestions.size;
     
     const progressBar = document.getElementById('progressBarFill');
     const progressText = document.getElementById('progressText');
@@ -545,13 +555,28 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check for unanswered questions
         const totalQuestions = 38;
         const answeredQuestions = new Set();
-        form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+        
+        // Count radio buttons
+        form.querySelectorAll('input[type="radio"]:checked').forEach(input => {
             const name = input.name.split('_')[0];
             answeredQuestions.add(name);
         });
-        form.querySelectorAll('select:not([value=""])').forEach(select => {
-            const name = select.name.split('_')[0];
+        
+        // Count checkboxes
+        form.querySelectorAll('input[type="checkbox"]:checked').forEach(input => {
+            const name = input.name.split('_')[0];
             answeredQuestions.add(name);
+        });
+        
+        // Count selects - only if they have a valid value
+        form.querySelectorAll('select').forEach(select => {
+            if (select.value && select.value !== '' && 
+                select.value !== '--- Select ---' && 
+                select.value !== '---' &&
+                select.value !== '--- Select Option ---') {
+                const name = select.name.split('_')[0];
+                answeredQuestions.add(name);
+            }
         });
         
         const unansweredCount = totalQuestions - answeredQuestions.size;
