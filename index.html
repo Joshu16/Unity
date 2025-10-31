@@ -8,7 +8,23 @@
 </head>
 <body>
     <div class="container">
-        <h1>Unity Coding Test</h1>
+        <div class="header-controls">
+            <h1>Unity Coding Test</h1>
+            <div class="header-right">
+                <div class="timer-container">
+                    <label class="timer-toggle-label">
+                        <input type="checkbox" id="timerEnabled" />
+                        <span>Enable Timer</span>
+                    </label>
+                    <input type="number" id="timerMinutes" class="timer-input" placeholder="Min" min="1" max="300" value="60" />
+                    <div id="timerDisplay" class="timer-display">00:00</div>
+                </div>
+                <button type="button" id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <span class="toggle-icon">🌙</span>
+                    <span class="toggle-text">Dark Mode</span>
+                </button>
+            </div>
+        </div>
         
         <form id="testForm">
             <!-- Question 1: True/False about Unity naming conventions -->
@@ -22,60 +38,68 @@
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>public class playerScript : Monobehaviour {
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
+                        </div>
+                    </div>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>public class playerScript : Monobehaviour {
 public light playerLight;
 void playerfunction () {
 playerlight. Enabled = !playerlight. Enabled;
 }
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q1_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q1_1" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>Public Class playerScript : MonoBehaviour {
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>Public Class playerScript : MonoBehaviour {
 Public Light PlayerLight;
 Void PlayerFunction () {
 PlayerLight.Enabled = !PlayerLight.Enabled;
 }
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q1_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q1_2" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>public class PlayerScript : MonoBehaviour {
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>public class PlayerScript : MonoBehaviour {
 public Light playerLight;
 void PlayerFunction () {
 playerLight.enabled = !playerLight.enabled;
 }
 }</code></pre>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q1_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q1_3" value="false"> FALSE
-                            </label>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q1_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,45 +390,53 @@ public class CoolBook {
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>onClick AddListener called inside the Start function so button1 will turn the color of lightAsset to green.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q8_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q8_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>An OnTriggerEnter2D function needs to be used to detect button presses so only button3 will turn the color of lightAsset to green.</p>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>onClick AddListener called inside the Start function so button1 will turn the color of lightAsset to green.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q8_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q8_2" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>An OnTriggerEnter2D function needs to be used to detect button presses so only button3 will turn the color of lightAsset to green.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>onClick AddListener can be called inside the Update function so button2 will turn the color of lightAsset to green.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q8_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q8_3" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>onClick AddListener can be called inside the Update function so button2 will turn the color of lightAsset to green.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q8_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -647,9 +679,16 @@ void OnTriggerEnter2D (Collider2D collider)
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using Unity.Entities;
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
+                        </div>
+                    </div>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using Unity.Entities;
 using UnityEngine;
 
 public class KeyboardComponent : MonoBehaviour
@@ -657,20 +696,20 @@ public class KeyboardComponent : MonoBehaviour
     public float Horizontal;
     public float Vertical;
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q13_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q13_1" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using UnityEngine;
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using UnityEngine;
 using System.Collections;
 
 public class KeyboardScript : MonoBehaviour
@@ -682,20 +721,20 @@ public class KeyboardScript : MonoBehaviour
         public int missiles;
     }
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q13_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q13_2" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using UnityEngine;
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using UnityEngine;
 using System.Collections;
 
 public class Movement : MonoBehaviour
@@ -703,14 +742,15 @@ public class Movement : MonoBehaviour
     public float speed;
     public float turnSpeed;
 }</code></pre>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q13_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q13_3" value="false"> FALSE
-                            </label>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q13_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1194,45 +1234,53 @@ public class UnlockGate : MonoBehaviour
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>You can add transitions from the Entry node to other states to control which state the state machine should begin in.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q23_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q23_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>An animation state can only have one transition to another animation state.</p>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>You can add transitions from the Entry node to other states to control which state the state machine should begin in.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q23_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q23_2" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>An animation state can only have one transition to another animation state.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>State machines can be created with or without a default state.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q23_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q23_3" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>State machines can be created with or without a default state.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q23_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1365,9 +1413,16 @@ private void Start()
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using UnityEngine;
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
+                        </div>
+                    </div>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using UnityEngine;
 using System.Collections;
 
 public class Fireball : MonoBehaviour
@@ -1376,20 +1431,20 @@ public class Fireball : MonoBehaviour
     public Transform firePosition;
     public float fireballSpeed;
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q26_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q26_1" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using Unity.Entities;
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using Unity.Entities;
 using UnityEngine;
 
 public class ShieldComponent : MonoBehaviour
@@ -1397,20 +1452,20 @@ public class ShieldComponent : MonoBehaviour
     public float Protection;
     public float Size;
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q26_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q26_2" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>using Unity.Entities;
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>using Unity.Entities;
 using UnityEngine;
 
 public class EnemyMovementSystem : ComponentSystem
@@ -1418,14 +1473,15 @@ public class EnemyMovementSystem : ComponentSystem
     public Rigidbody Rigidbody;
     public InputComponent Inputcomponent;
 }</code></pre>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q26_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q26_3" value="false"> FALSE
-                            </label>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q26_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1442,59 +1498,67 @@ public class EnemyMovementSystem : ComponentSystem
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>public class PlaySoundEffect : MonoBehaviour {
-public AudioSource enteringSound;
-public AudioSource leavingSound;</code></pre>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q27_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q27_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>private void ontriggerenter (Collider Other)
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>public class PlaySoundEffect : MonoBehaviour {
+public AudioSource enteringSound;
+public AudioSource leavingSound;</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_1" value="false">
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>private void ontriggerenter (Collider Other)
 {
     if(Other.compareTag("Player"))
     {
         PlaySound (enteringSound);
     }
 }</code></pre>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q27_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q27_2" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="code-snippet">
-                            <pre><code>private void OnTriggerExit (Collider other)
+                        
+                        <div class="code-snippet-row">
+                            <div class="code-snippet">
+                                <pre><code>private void OnTriggerExit (Collider other)
 {
     if (other.CompareTag("Player"))
     {
         PlaySound(leavingSound);
     }
 }</code></pre>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q27_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q27_3" value="false"> FALSE
-                            </label>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q27_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1632,45 +1696,53 @@ public class MovingThings : MonoBehaviour
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The Static checkbox is used to signify to the Unity Engine that an object will remain stationary.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q31_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q31_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The tag property can be used to enable multiple objects to be found at once using a MonoBehavior script.</p>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The Static checkbox is used to signify to the Unity Engine that an object will remain stationary.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q31_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q31_2" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The tag property can be used to enable multiple objects to be found at once using a MonoBehavior script.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The inspector window may be used to modify a prefab.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q31_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q31_3" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The inspector window may be used to modify a prefab.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q31_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1828,45 +1900,53 @@ public class MyClass: MonoBehaviour {
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The move tool can be configured to display either the local or the global orientation of an object.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q37_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q37_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The transform tool combines the move, rotate, and scale tools.</p>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The move tool can be configured to display either the local or the global orientation of an object.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q37_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q37_2" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The transform tool combines the move, rotate, and scale tools.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>An object can be moved, rotated, or scaled only if working in the 3D view.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q37_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q37_3" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>An object can be moved, rotated, or scaled only if working in the 3D view.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q37_3" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1961,59 +2041,67 @@ private class PlayerOne : MonoBehaviour
                 </div>
                 
                 <div class="true-false-container">
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>The void keyword indicates that a function will return a null value.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q40_1" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q40_1" value="false"> FALSE
-                            </label>
+                    <div class="true-false-headers">
+                        <div class="true-false-headers-wrapper">
+                            <div class="header-btn header-true">TRUE</div>
+                            <div class="header-btn header-false">FALSE</div>
                         </div>
                     </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>A function can be passed more than one type of parameter.</p>
+                    <div class="true-false-content">
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>The void keyword indicates that a function will return a null value.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_1" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_1" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q40_2" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q40_2" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>A function can be passed more than one type of parameter.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_2" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_2" value="false">
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>A function will not execute unless it is called first.</p>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>A function will not execute unless it is called first.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_3" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_3" value="false">
+                                </label>
+                            </div>
                         </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q40_3" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q40_3" value="false"> FALSE
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="code-snippet-row">
-                        <div class="statement-text">
-                            <p>A function that returns a value must use the return keyword.</p>
-                        </div>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="q40_4" value="true" required> TRUE
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="q40_4" value="false"> FALSE
-                            </label>
+                        
+                        <div class="code-snippet-row">
+                            <div class="statement-text">
+                                <p>A function that returns a value must use the return keyword.</p>
+                            </div>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_4" value="true" required>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="q40_4" value="false">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2023,6 +2111,18 @@ private class PlayerOne : MonoBehaviour
                 <button type="submit" class="submit-btn">Submit Test</button>
             </div>
         </form>
+
+        <!-- Timer Expired Modal -->
+        <div id="timerModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>⏰ Time's Up!</h2>
+                <p>Your time has expired. What would you like to do?</p>
+                <div class="modal-buttons">
+                    <button id="submitNowBtn" class="modal-btn modal-btn-primary">Submit Now (Mark remaining as incorrect)</button>
+                    <button id="continueBtn" class="modal-btn modal-btn-secondary">Continue Without Timer</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Results Section -->
         <div id="results" class="results hidden">

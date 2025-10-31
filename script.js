@@ -204,14 +204,188 @@ const questionTexts = {
     q40: 'Question 40: Functions True/False'
 };
 
+// Utility function to shuffle array
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Randomize options in questions
+function randomizeQuestions() {
+    // Randomize True/False radio groups
+    document.querySelectorAll('.radio-group').forEach(group => {
+        const labels = Array.from(group.querySelectorAll('.radio-label'));
+        const shuffled = shuffleArray(labels);
+        group.innerHTML = '';
+        shuffled.forEach(label => group.appendChild(label));
+    });
+
+    // Randomize multiple choice options
+    document.querySelectorAll('.multiple-choice').forEach(container => {
+        const choices = Array.from(container.querySelectorAll('.choice'));
+        const shuffled = shuffleArray(choices);
+        container.innerHTML = '';
+        shuffled.forEach(choice => container.appendChild(choice));
+    });
+
+    // Randomize checkbox choices
+    document.querySelectorAll('.checkbox-choice').forEach(container => {
+        const choices = Array.from(container.querySelectorAll('.choice'));
+        const shuffled = shuffleArray(choices);
+        container.innerHTML = '';
+        shuffled.forEach(choice => container.appendChild(choice));
+    });
+
+    // Randomize matching items
+    document.querySelectorAll('.matching-left').forEach(container => {
+        const items = Array.from(container.querySelectorAll('.match-item'));
+        const shuffled = shuffleArray(items);
+        container.innerHTML = '';
+        shuffled.forEach(item => container.appendChild(item));
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('testForm');
     const resultsDiv = document.getElementById('results');
     const resultsContent = document.getElementById('results-content');
     const retryBtn = document.getElementById('retry-btn');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    
+    // Timer elements
+    const timerEnabled = document.getElementById('timerEnabled');
+    const timerMinutes = document.getElementById('timerMinutes');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerModal = document.getElementById('timerModal');
+    const submitNowBtn = document.getElementById('submitNowBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    
+    let timerInterval = null;
+    let timeRemaining = 0;
+    let timerActive = false;
+
+    // Randomize questions on load
+    randomizeQuestions();
+
+    // Dark mode toggle
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.querySelector('.toggle-icon').textContent = '☀️';
+        darkModeToggle.querySelector('.toggle-text').textContent = 'Light Mode';
+    }
+
+    darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        
+        if (isDark) {
+            darkModeToggle.querySelector('.toggle-icon').textContent = '☀️';
+            darkModeToggle.querySelector('.toggle-text').textContent = 'Light Mode';
+        } else {
+            darkModeToggle.querySelector('.toggle-icon').textContent = '🌙';
+            darkModeToggle.querySelector('.toggle-text').textContent = 'Dark Mode';
+        }
+    });
+
+    // Timer functions
+    function updateTimerDisplay(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        
+        // Add warning/danger classes
+        timerDisplay.classList.remove('warning', 'danger');
+        if (seconds <= 300) { // 5 minutes
+            timerDisplay.classList.add('danger');
+        } else if (seconds <= 600) { // 10 minutes
+            timerDisplay.classList.add('warning');
+        }
+    }
+
+    function startTimer(minutes) {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+        
+        timeRemaining = minutes * 60;
+        timerActive = true;
+        updateTimerDisplay(timeRemaining);
+        
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimerDisplay(timeRemaining);
+            
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                timerActive = false;
+                timerDisplay.textContent = '00:00';
+                showTimerModal();
+            }
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        timerActive = false;
+        timerDisplay.textContent = '00:00';
+        timerDisplay.classList.remove('warning', 'danger');
+    }
+
+    function showTimerModal() {
+        timerModal.classList.remove('hidden');
+    }
+
+    function hideTimerModal() {
+        timerModal.classList.add('hidden');
+    }
+
+    // Timer checkbox toggle
+    timerEnabled.addEventListener('change', function() {
+        if (this.checked) {
+            const minutes = parseInt(timerMinutes.value) || 60;
+            timerMinutes.disabled = false;
+            startTimer(minutes);
+        } else {
+            timerMinutes.disabled = true;
+            stopTimer();
+        }
+    });
+
+    // Disable timer input when unchecked
+    if (!timerEnabled.checked) {
+        timerMinutes.disabled = true;
+    }
+
+    // Modal button handlers
+    submitNowBtn.addEventListener('click', function() {
+        hideTimerModal();
+        stopTimer();
+        form.dispatchEvent(new Event('submit'));
+    });
+
+    continueBtn.addEventListener('click', function() {
+        hideTimerModal();
+        stopTimer();
+        timerEnabled.checked = false;
+        timerMinutes.disabled = true;
+    });
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Stop timer if active
+        if (timerActive) {
+            stopTimer();
+        }
         
         const results = checkAnswers();
         displayResults(results);
@@ -228,9 +402,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset form
         form.reset();
         
+        // Stop and reset timer
+        stopTimer();
+        timerEnabled.checked = false;
+        timerMinutes.disabled = true;
+        timerMinutes.value = 60;
+        
         // Hide results, show form
         resultsDiv.classList.add('hidden');
         form.style.display = 'block';
+        
+        // Randomize questions again
+        randomizeQuestions();
         
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
