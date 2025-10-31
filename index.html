@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
+    <!-- Initial Modal: Resume or New Test -->
+    <div id="initialModal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to Unity Coding Test</h2>
+            <p>You have a saved test in progress. What would you like to do?</p>
+            <div class="modal-buttons">
+                <button id="resumeTestBtn" class="modal-btn modal-btn-primary">Resume Test</button>
+                <button id="newTestBtn" class="modal-btn modal-btn-secondary">Start New Test</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header-controls">
             <h1>Unity Coding Test</h1>
@@ -26,6 +38,13 @@
             </div>
         </div>
         
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+            <span id="progressText" class="progress-text">0/38 questions answered</span>
+        </div>
+        
         <form id="testForm">
             <!-- Question 1: True/False about Unity naming conventions -->
             <div class="question" id="q1">
@@ -35,6 +54,10 @@
                 <div class="question-instructions">
                     <p>For each code snippet, select <strong>True</strong> if it is using Unity naming conventions or <strong>False</strong> if it is not.</p>
                     <p class="note">You will receive partial credit for each correct answer.</p>
+                    <button type="button" class="hint-btn" onclick="toggleHint('q1')">💡 Hint</button>
+                    <div id="hint-q1" class="hint-content hidden">
+                        <p><strong>Unity Naming Conventions:</strong> Classes use PascalCase (e.g., PlayerScript), fields use camelCase (e.g., playerLight), methods use PascalCase (e.g., PlayerFunction). C# keywords are lowercase (public, void, class).</p>
+                    </div>
                 </div>
                 
                 <div class="true-false-container">
@@ -56,7 +79,7 @@ playerlight. Enabled = !playerlight. Enabled;
                             </div>
                             <div class="radio-group">
                                 <label class="radio-label">
-                                    <input type="radio" name="q1_1" value="true" required>
+                                    <input type="radio" name="q1_1" value="true">
                                 </label>
                                 <label class="radio-label">
                                     <input type="radio" name="q1_1" value="false">

@@ -249,12 +249,118 @@ function randomizeQuestions() {
     });
 }
 
+// Global function for hints
+function toggleHint(questionId) {
+    const hint = document.getElementById(`hint-${questionId}`);
+    if (hint) {
+        hint.classList.toggle('hidden');
+    }
+}
+
+// Progress tracking
+function updateProgress() {
+    const form = document.getElementById('testForm');
+    const totalQuestions = 38;
+    let answered = 0;
+    
+    // Count answered questions
+    form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked, select:not([value=""])').forEach(input => {
+        if (!input.hasAttribute('data-counted')) {
+            answered++;
+            input.setAttribute('data-counted', 'true');
+        }
+    });
+    
+    // Count unique answered questions
+    const answeredQuestions = new Set();
+    form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+        const name = input.name.split('_')[0]; // Get question number
+        answeredQuestions.add(name);
+    });
+    form.querySelectorAll('select:not([value=""])').forEach(select => {
+        const name = select.name.split('_')[0];
+        answeredQuestions.add(name);
+    });
+    
+    answered = answeredQuestions.size;
+    
+    const progressBar = document.getElementById('progressBarFill');
+    const progressText = document.getElementById('progressText');
+    const percentage = (answered / totalQuestions) * 100;
+    
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (progressText) progressText.textContent = `${answered}/${totalQuestions} questions answered`;
+    
+    // Check for unanswered questions
+    const unansweredWarning = document.getElementById('unansweredWarning');
+    if (answered < totalQuestions && unansweredWarning) {
+        unansweredWarning.classList.remove('hidden');
+    } else if (unansweredWarning) {
+        unansweredWarning.classList.add('hidden');
+    }
+    
+    // Save progress to localStorage
+    saveProgress();
+}
+
+// Save progress to localStorage
+function saveProgress() {
+    const form = document.getElementById('testForm');
+    const formData = new FormData(form);
+    const answers = {};
+    
+    // Save all form inputs
+    form.querySelectorAll('input, select').forEach(input => {
+        if (input.type === 'radio' && input.checked) {
+            answers[input.name] = input.value;
+        } else if (input.type === 'checkbox' && input.checked) {
+            if (!answers[input.name]) answers[input.name] = [];
+            answers[input.name].push(input.value);
+        } else if (input.tagName === 'SELECT' && input.value) {
+            answers[input.name] = input.value;
+        }
+    });
+    
+    localStorage.setItem('unityTestProgress', JSON.stringify({
+        answers: answers,
+        timestamp: Date.now()
+    }));
+}
+
+// Load progress from localStorage
+function loadProgress() {
+    const saved = localStorage.getItem('unityTestProgress');
+    if (!saved) return null;
+    
+    try {
+        const data = JSON.parse(saved);
+        // Check if saved data is less than 7 days old
+        if (Date.now() - data.timestamp > 7 * 24 * 60 * 60 * 1000) {
+            localStorage.removeItem('unityTestProgress');
+            return null;
+        }
+        return data.answers;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Clear saved progress
+function clearProgress() {
+    localStorage.removeItem('unityTestProgress');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('testForm');
     const resultsDiv = document.getElementById('results');
     const resultsContent = document.getElementById('results-content');
     const retryBtn = document.getElementById('retry-btn');
     const darkModeToggle = document.getElementById('darkModeToggle');
+    
+    // Initial modal elements
+    const initialModal = document.getElementById('initialModal');
+    const resumeTestBtn = document.getElementById('resumeTestBtn');
+    const newTestBtn = document.getElementById('newTestBtn');
     
     // Timer elements
     const timerEnabled = document.getElementById('timerEnabled');
@@ -268,8 +374,62 @@ document.addEventListener('DOMContentLoaded', function() {
     let timeRemaining = 0;
     let timerActive = false;
 
+    // Check for saved progress
+    const savedAnswers = loadProgress();
+    if (savedAnswers && Object.keys(savedAnswers).length > 0) {
+        initialModal.classList.remove('hidden');
+    } else {
+        initialModal.classList.add('hidden');
+    }
+
+    // Resume test
+    resumeTestBtn.addEventListener('click', function() {
+        if (savedAnswers) {
+            // Restore answers
+            Object.keys(savedAnswers).forEach(name => {
+                const value = savedAnswers[name];
+                if (Array.isArray(value)) {
+                    // Checkbox values
+                    value.forEach(val => {
+                        const input = form.querySelector(`input[name="${name}"][value="${val}"]`);
+                        if (input) input.checked = true;
+                    });
+                } else {
+                    // Radio or select
+                    const input = form.querySelector(`input[name="${name}"][value="${value}"]`) || 
+                                 form.querySelector(`select[name="${name}"]`);
+                    if (input) {
+                        if (input.type === 'radio') {
+                            input.checked = true;
+                        } else if (input.tagName === 'SELECT') {
+                            input.value = value;
+                        }
+                    }
+                }
+            });
+            updateProgress();
+        }
+        initialModal.classList.add('hidden');
+    });
+
+    // New test
+    newTestBtn.addEventListener('click', function() {
+        clearProgress();
+        form.reset();
+        updateProgress();
+        initialModal.classList.add('hidden');
+        randomizeQuestions();
+    });
+
     // Randomize questions on load
     randomizeQuestions();
+    
+    // Update progress on any input change
+    form.addEventListener('change', updateProgress);
+    form.addEventListener('input', updateProgress);
+    
+    // Initial progress update
+    setTimeout(updateProgress, 100);
 
     // Dark mode toggle
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -379,13 +539,37 @@ document.addEventListener('DOMContentLoaded', function() {
         timerMinutes.disabled = true;
     });
 
-    form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Check for unanswered questions
+        const totalQuestions = 38;
+        const answeredQuestions = new Set();
+        form.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+            const name = input.name.split('_')[0];
+            answeredQuestions.add(name);
+        });
+        form.querySelectorAll('select:not([value=""])').forEach(select => {
+            const name = select.name.split('_')[0];
+            answeredQuestions.add(name);
+        });
+        
+        const unansweredCount = totalQuestions - answeredQuestions.size;
+        
+        // Show warning if unanswered questions
+        if (unansweredCount > 0) {
+            if (!confirm(`You have ${unansweredCount} unanswered question(s). They will be marked as incorrect automatically. Do you want to continue?`)) {
+                return;
+            }
+        }
         
         // Stop timer if active
         if (timerActive) {
             stopTimer();
         }
+        
+        // Clear saved progress after submission
+        clearProgress();
         
         const results = checkAnswers();
         displayResults(results);
@@ -435,6 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const q1_3_correct = q1_3 === correctAnswers.q1_3;
         
         const q1_score = (q1_1_correct ? 1 : 0) + (q1_2_correct ? 1 : 0) + (q1_3_correct ? 1 : 0);
+        const q1_points = (q1_score / 3) * 1000; // Points out of 1000
         const q1_perfect = q1_score === 3;
         
         results.push({
@@ -443,11 +628,16 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q1_perfect,
             partialScore: q1_score,
             totalParts: 3,
-            answer: `A: ${q1_1}, B: ${q1_2}, C: ${q1_3}`,
+            points: Math.round(q1_points),
+            maxPoints: 1000,
+            answer: `A: ${q1_1 || 'No answer'}, B: ${q1_2 || 'No answer'}, C: ${q1_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q1_1}, B: ${correctAnswers.q1_2}, C: ${correctAnswers.q1_3}`
         });
         
-        if (q1_perfect) correctCount++;
+        // Add points to total (for partial credit, add proportional points)
+        if (q1_perfect) {
+            correctCount++;
+        }
 
         // Question 2: Multiple choice
         totalQuestions++;
@@ -458,6 +648,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 2,
             questionText: questionTexts.q2,
             correct: q2_correct,
+            points: q2_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q2 || 'No answer',
             correctAnswer: correctAnswers.q2
         });
@@ -474,10 +666,19 @@ document.addEventListener('DOMContentLoaded', function() {
                           q3_2 === correctAnswers.q3_2 && 
                           q3_3 === correctAnswers.q3_3;
         
+        const q3_parts = (q3_1 === correctAnswers.q3_1 ? 1 : 0) + 
+                         (q3_2 === correctAnswers.q3_2 ? 1 : 0) + 
+                         (q3_3 === correctAnswers.q3_3 ? 1 : 0);
+        const q3_points = (q3_parts / 3) * 1000;
+        
         results.push({
             questionNum: 3,
             questionText: questionTexts.q3,
             correct: q3_correct,
+            partialScore: q3_parts,
+            totalParts: 3,
+            points: Math.round(q3_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q3_1 || 'empty'}, Blank 2: ${q3_2 || 'empty'}, Blank 3: ${q3_3 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q3_1}, Blank 2: ${correctAnswers.q3_2}, Blank 3: ${correctAnswers.q3_3}`
         });
@@ -493,6 +694,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 4,
             questionText: questionTexts.q4,
             correct: q4_correct,
+            points: q4_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q4 || 'No answer',
             correctAnswer: correctAnswers.q4
         });
@@ -508,11 +711,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const q5_correct = q5_1 === correctAnswers.q5_1 && 
                           q5_2 === correctAnswers.q5_2 && 
                           q5_3 === correctAnswers.q5_3;
+        const q5_parts = (q5_1 === correctAnswers.q5_1 ? 1 : 0) + 
+                         (q5_2 === correctAnswers.q5_2 ? 1 : 0) + 
+                         (q5_3 === correctAnswers.q5_3 ? 1 : 0);
+        const q5_points = (q5_parts / 3) * 1000;
         
         results.push({
             questionNum: 5,
             questionText: questionTexts.q5,
             correct: q5_correct,
+            partialScore: q5_parts,
+            totalParts: 3,
+            points: Math.round(q5_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q5_1 || 'empty'}, Blank 2: ${q5_2 || 'empty'}, Blank 3: ${q5_3 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q5_1}, Blank 2: ${correctAnswers.q5_2}, Blank 3: ${correctAnswers.q5_3}`
         });
@@ -528,6 +739,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 6,
             questionText: questionTexts.q6,
             correct: q6_correct,
+            points: q6_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q6 || 'No answer',
             correctAnswer: correctAnswers.q6
         });
@@ -543,6 +756,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 7,
             questionText: questionTexts.q7,
             correct: q7_correct,
+            points: q7_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q7 || 'No answer',
             correctAnswer: correctAnswers.q7
         });
@@ -561,6 +776,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q8_score = (q8_1_correct ? 1 : 0) + (q8_2_correct ? 1 : 0) + (q8_3_correct ? 1 : 0);
         const q8_perfect = q8_score === 3;
+        const q8_points = (q8_score / 3) * 1000;
         
         results.push({
             questionNum: 8,
@@ -568,6 +784,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q8_perfect,
             partialScore: q8_score,
             totalParts: 3,
+            points: Math.round(q8_points),
+            maxPoints: 1000,
             answer: `A: ${q8_1 || 'No answer'}, B: ${q8_2 || 'No answer'}, C: ${q8_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q8_1}, B: ${correctAnswers.q8_2}, C: ${correctAnswers.q8_3}`
         });
@@ -585,11 +803,20 @@ document.addEventListener('DOMContentLoaded', function() {
                           q9_2 === correctAnswers.q9_2 && 
                           q9_3 === correctAnswers.q9_3 &&
                           q9_4 === correctAnswers.q9_4;
+        const q9_parts = (q9_1 === correctAnswers.q9_1 ? 1 : 0) + 
+                         (q9_2 === correctAnswers.q9_2 ? 1 : 0) + 
+                         (q9_3 === correctAnswers.q9_3 ? 1 : 0) + 
+                         (q9_4 === correctAnswers.q9_4 ? 1 : 0);
+        const q9_points = (q9_parts / 4) * 1000;
         
         results.push({
             questionNum: 9,
             questionText: questionTexts.q9,
             correct: q9_correct,
+            partialScore: q9_parts,
+            totalParts: 4,
+            points: Math.round(q9_points),
+            maxPoints: 1000,
             answer: `Pos 1: ${q9_1 || 'empty'}, Pos 2: ${q9_2 || 'empty'}, Pos 3: ${q9_3 || 'empty'}, Pos 4: ${q9_4 || 'empty'}`,
             correctAnswer: `Pos 1: ${correctAnswers.q9_1}, Pos 2: ${correctAnswers.q9_2}, Pos 3: ${correctAnswers.q9_3}, Pos 4: ${correctAnswers.q9_4}`
         });
@@ -605,6 +832,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 10,
             questionText: questionTexts.q10,
             correct: q10_correct,
+            points: q10_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q10 || 'No answer',
             correctAnswer: correctAnswers.q10
         });
@@ -625,6 +854,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q11_score = (q11_1_correct ? 1 : 0) + (q11_2_correct ? 1 : 0) + (q11_3_correct ? 1 : 0) + (q11_4_correct ? 1 : 0);
         const q11_perfect = q11_score === 4;
+        const q11_points = (q11_score / 4) * 1000;
         
         results.push({
             questionNum: 11,
@@ -632,6 +862,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q11_perfect,
             partialScore: q11_score,
             totalParts: 4,
+            points: Math.round(q11_points),
+            maxPoints: 1000,
             answer: `Match 1: ${q11_1 || 'empty'}, Match 2: ${q11_2 || 'empty'}, Match 3: ${q11_3 || 'empty'}, Match 4: ${q11_4 || 'empty'}`,
             correctAnswer: `Match 1: ${correctAnswers.q11_1}, Match 2: ${correctAnswers.q11_2}, Match 3: ${correctAnswers.q11_3}, Match 4: ${correctAnswers.q11_4}`
         });
@@ -645,11 +877,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q12_correct = q12_1 === correctAnswers.q12_1 && 
                            q12_2 === correctAnswers.q12_2;
+        const q12_parts = (q12_1 === correctAnswers.q12_1 ? 1 : 0) + 
+                         (q12_2 === correctAnswers.q12_2 ? 1 : 0);
+        const q12_points = (q12_parts / 2) * 1000;
         
         results.push({
             questionNum: 12,
             questionText: questionTexts.q12,
             correct: q12_correct,
+            partialScore: q12_parts,
+            totalParts: 2,
+            points: Math.round(q12_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q12_1 || 'empty'}, Blank 2: ${q12_2 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q12_1}, Blank 2: ${correctAnswers.q12_2}`
         });
@@ -668,6 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q13_score = (q13_1_correct ? 1 : 0) + (q13_2_correct ? 1 : 0) + (q13_3_correct ? 1 : 0);
         const q13_perfect = q13_score === 3;
+        const q13_points = (q13_score / 3) * 1000;
         
         results.push({
             questionNum: 13,
@@ -675,6 +915,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q13_perfect,
             partialScore: q13_score,
             totalParts: 3,
+            points: Math.round(q13_points),
+            maxPoints: 1000,
             answer: `A: ${q13_1 || 'No answer'}, B: ${q13_2 || 'No answer'}, C: ${q13_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q13_1}, B: ${correctAnswers.q13_2}, C: ${correctAnswers.q13_3}`
         });
@@ -688,11 +930,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q14_correct = q14_1 === correctAnswers.q14_1 && 
                            q14_2 === correctAnswers.q14_2;
+        const q14_parts = (q14_1 === correctAnswers.q14_1 ? 1 : 0) + 
+                         (q14_2 === correctAnswers.q14_2 ? 1 : 0);
+        const q14_points = (q14_parts / 2) * 1000;
         
         results.push({
             questionNum: 14,
             questionText: questionTexts.q14,
             correct: q14_correct,
+            partialScore: q14_parts,
+            totalParts: 2,
+            points: Math.round(q14_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q14_1 || 'empty'}, Blank 2: ${q14_2 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q14_1}, Blank 2: ${correctAnswers.q14_2}`
         });
@@ -711,6 +960,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q15_score = (q15_1_correct ? 1 : 0) + (q15_2_correct ? 1 : 0) + (q15_3_correct ? 1 : 0);
         const q15_perfect = q15_score === 3;
+        const q15_points = (q15_score / 3) * 1000;
         
         results.push({
             questionNum: 15,
@@ -718,6 +968,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q15_perfect,
             partialScore: q15_score,
             totalParts: 3,
+            points: Math.round(q15_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q15_1 || 'empty'}, Blank 2: ${q15_2 || 'empty'}, Blank 3: ${q15_3 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q15_1}, Blank 2: ${correctAnswers.q15_2}, Blank 3: ${correctAnswers.q15_3}`
         });
@@ -735,6 +987,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 16,
             questionText: questionTexts.q16,
             correct: q16_correct,
+            points: q16_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q16_selected || 'No selections',
             correctAnswer: q16_expected
         });
@@ -750,6 +1004,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 17,
             questionText: questionTexts.q17,
             correct: q17_correct,
+            points: q17_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q17 || 'No answer',
             correctAnswer: correctAnswers.q17
         });
@@ -770,6 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q18_score = (q18_1_correct ? 1 : 0) + (q18_2_correct ? 1 : 0) + (q18_3_correct ? 1 : 0) + (q18_4_correct ? 1 : 0);
         const q18_perfect = q18_score === 4;
+        const q18_points = (q18_score / 4) * 1000;
         
         results.push({
             questionNum: 18,
@@ -777,6 +1034,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q18_perfect,
             partialScore: q18_score,
             totalParts: 4,
+            points: Math.round(q18_points),
+            maxPoints: 1000,
             answer: `Match 1: ${q18_1 || 'empty'}, Match 2: ${q18_2 || 'empty'}, Match 3: ${q18_3 || 'empty'}, Match 4: ${q18_4 || 'empty'}`,
             correctAnswer: `Match 1: ${correctAnswers.q18_1}, Match 2: ${correctAnswers.q18_2}, Match 3: ${correctAnswers.q18_3}, Match 4: ${correctAnswers.q18_4}`
         });
@@ -790,11 +1049,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q19_correct = q19_1 === correctAnswers.q19_1 && 
                            q19_2 === correctAnswers.q19_2;
+        const q19_parts = (q19_1 === correctAnswers.q19_1 ? 1 : 0) + 
+                         (q19_2 === correctAnswers.q19_2 ? 1 : 0);
+        const q19_points = (q19_parts / 2) * 1000;
         
         results.push({
             questionNum: 19,
             questionText: questionTexts.q19,
             correct: q19_correct,
+            partialScore: q19_parts,
+            totalParts: 2,
+            points: Math.round(q19_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q19_1 || 'empty'}, Blank 2: ${q19_2 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q19_1}, Blank 2: ${correctAnswers.q19_2}`
         });
@@ -810,11 +1076,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const q20_correct = q20_1 === correctAnswers.q20_1 && 
                            q20_2 === correctAnswers.q20_2 && 
                            q20_3 === correctAnswers.q20_3;
+        const q20_parts = (q20_1 === correctAnswers.q20_1 ? 1 : 0) + 
+                         (q20_2 === correctAnswers.q20_2 ? 1 : 0) + 
+                         (q20_3 === correctAnswers.q20_3 ? 1 : 0);
+        const q20_points = (q20_parts / 3) * 1000;
         
         results.push({
             questionNum: 20,
             questionText: questionTexts.q20,
             correct: q20_correct,
+            partialScore: q20_parts,
+            totalParts: 3,
+            points: Math.round(q20_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q20_1 || 'empty'}, Blank 2: ${q20_2 || 'empty'}, Blank 3: ${q20_3 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q20_1}, Blank 2: ${correctAnswers.q20_2}, Blank 3: ${correctAnswers.q20_3}`
         });
@@ -837,6 +1111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q21_score = (q21_1_correct ? 1 : 0) + (q21_2_correct ? 1 : 0) + (q21_3_correct ? 1 : 0) + (q21_4_correct ? 1 : 0) + (q21_5_correct ? 1 : 0);
         const q21_perfect = q21_score === 5;
+        const q21_points = (q21_score / 5) * 1000;
         
         results.push({
             questionNum: 21,
@@ -844,6 +1119,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q21_perfect,
             partialScore: q21_score,
             totalParts: 5,
+            points: Math.round(q21_points),
+            maxPoints: 1000,
             answer: `Match 1: ${q21_1 || 'empty'}, Match 2: ${q21_2 || 'empty'}, Match 3: ${q21_3 || 'empty'}, Match 4: ${q21_4 || 'empty'}, Match 5: ${q21_5 || 'empty'}`,
             correctAnswer: `Match 1: ${correctAnswers.q21_1}, Match 2: ${correctAnswers.q21_2}, Match 3: ${correctAnswers.q21_3}, Match 4: ${correctAnswers.q21_4}, Match 5: ${correctAnswers.q21_5}`
         });
@@ -859,6 +1136,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 22,
             questionText: questionTexts.q22,
             correct: q22_correct,
+            points: q22_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q22 || 'No answer',
             correctAnswer: correctAnswers.q22
         });
@@ -877,6 +1156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q23_score = (q23_1_correct ? 1 : 0) + (q23_2_correct ? 1 : 0) + (q23_3_correct ? 1 : 0);
         const q23_perfect = q23_score === 3;
+        const q23_points = (q23_score / 3) * 1000;
         
         results.push({
             questionNum: 23,
@@ -884,6 +1164,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q23_perfect,
             partialScore: q23_score,
             totalParts: 3,
+            points: Math.round(q23_points),
+            maxPoints: 1000,
             answer: `A: ${q23_1 || 'No answer'}, B: ${q23_2 || 'No answer'}, C: ${q23_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q23_1}, B: ${correctAnswers.q23_2}, C: ${correctAnswers.q23_3}`
         });
@@ -899,11 +1181,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const q24_correct = q24_1 === correctAnswers.q24_1 && 
                            q24_2 === correctAnswers.q24_2 && 
                            q24_3 === correctAnswers.q24_3;
+        const q24_parts = (q24_1 === correctAnswers.q24_1 ? 1 : 0) + 
+                         (q24_2 === correctAnswers.q24_2 ? 1 : 0) + 
+                         (q24_3 === correctAnswers.q24_3 ? 1 : 0);
+        const q24_points = (q24_parts / 3) * 1000;
         
         results.push({
             questionNum: 24,
             questionText: questionTexts.q24,
             correct: q24_correct,
+            partialScore: q24_parts,
+            totalParts: 3,
+            points: Math.round(q24_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q24_1 || 'empty'}, Blank 2: ${q24_2 || 'empty'}, Blank 3: ${q24_3 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q24_1}, Blank 2: ${correctAnswers.q24_2}, Blank 3: ${correctAnswers.q24_3}`
         });
@@ -921,6 +1211,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 25,
             questionText: questionTexts.q25,
             correct: q25_correct,
+            points: q25_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q25_selected || 'No selections',
             correctAnswer: q25_expected
         });
@@ -939,6 +1231,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q26_score = (q26_1_correct ? 1 : 0) + (q26_2_correct ? 1 : 0) + (q26_3_correct ? 1 : 0);
         const q26_perfect = q26_score === 3;
+        const q26_points = (q26_score / 3) * 1000;
         
         results.push({
             questionNum: 26,
@@ -946,6 +1239,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q26_perfect,
             partialScore: q26_score,
             totalParts: 3,
+            points: Math.round(q26_points),
+            maxPoints: 1000,
             answer: `A: ${q26_1 || 'No answer'}, B: ${q26_2 || 'No answer'}, C: ${q26_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q26_1}, B: ${correctAnswers.q26_2}, C: ${correctAnswers.q26_3}`
         });
@@ -964,6 +1259,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q27_score = (q27_1_correct ? 1 : 0) + (q27_2_correct ? 1 : 0) + (q27_3_correct ? 1 : 0);
         const q27_perfect = q27_score === 3;
+        const q27_points = (q27_score / 3) * 1000;
         
         results.push({
             questionNum: 27,
@@ -971,6 +1267,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q27_perfect,
             partialScore: q27_score,
             totalParts: 3,
+            points: Math.round(q27_points),
+            maxPoints: 1000,
             answer: `A: ${q27_1 || 'No answer'}, B: ${q27_2 || 'No answer'}, C: ${q27_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q27_1}, B: ${correctAnswers.q27_2}, C: ${correctAnswers.q27_3}`
         });
@@ -986,6 +1284,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 28,
             questionText: questionTexts.q28,
             correct: q28_correct,
+            points: q28_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q28 || 'No answer',
             correctAnswer: correctAnswers.q28
         });
@@ -999,11 +1299,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q29_correct = q29_1 === correctAnswers.q29_1 && 
                            q29_2 === correctAnswers.q29_2;
+        const q29_parts = (q29_1 === correctAnswers.q29_1 ? 1 : 0) + 
+                         (q29_2 === correctAnswers.q29_2 ? 1 : 0);
+        const q29_points = (q29_parts / 2) * 1000;
         
         results.push({
             questionNum: 29,
             questionText: questionTexts.q29,
             correct: q29_correct,
+            partialScore: q29_parts,
+            totalParts: 2,
+            points: Math.round(q29_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q29_1 || 'empty'}, Blank 2: ${q29_2 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q29_1}, Blank 2: ${correctAnswers.q29_2}`
         });
@@ -1017,11 +1324,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q30_correct = q30_1 === correctAnswers.q30_1 && 
                            q30_2 === correctAnswers.q30_2;
+        const q30_parts = (q30_1 === correctAnswers.q30_1 ? 1 : 0) + 
+                         (q30_2 === correctAnswers.q30_2 ? 1 : 0);
+        const q30_points = (q30_parts / 2) * 1000;
         
         results.push({
             questionNum: 30,
             questionText: questionTexts.q30,
             correct: q30_correct,
+            partialScore: q30_parts,
+            totalParts: 2,
+            points: Math.round(q30_points),
+            maxPoints: 1000,
             answer: `Blank 1: ${q30_1 || 'empty'}, Blank 2: ${q30_2 || 'empty'}`,
             correctAnswer: `Blank 1: ${correctAnswers.q30_1}, Blank 2: ${correctAnswers.q30_2}`
         });
@@ -1040,6 +1354,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q31_score = (q31_1_correct ? 1 : 0) + (q31_2_correct ? 1 : 0) + (q31_3_correct ? 1 : 0);
         const q31_perfect = q31_score === 3;
+        const q31_points = (q31_score / 3) * 1000;
         
         results.push({
             questionNum: 31,
@@ -1047,6 +1362,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q31_perfect,
             partialScore: q31_score,
             totalParts: 3,
+            points: Math.round(q31_points),
+            maxPoints: 1000,
             answer: `A: ${q31_1 || 'No answer'}, B: ${q31_2 || 'No answer'}, C: ${q31_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q31_1}, B: ${correctAnswers.q31_2}, C: ${correctAnswers.q31_3}`
         });
@@ -1062,6 +1379,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 32,
             questionText: questionTexts.q32,
             correct: q32_correct,
+            points: q32_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q32 || 'No answer',
             correctAnswer: correctAnswers.q32
         });
@@ -1077,6 +1396,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 34,
             questionText: questionTexts.q34,
             correct: q34_correct,
+            points: q34_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q34 || 'No answer',
             correctAnswer: correctAnswers.q34
         });
@@ -1094,6 +1415,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 35,
             questionText: questionTexts.q35,
             correct: q35_correct,
+            points: q35_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q35_selected || 'No selections',
             correctAnswer: q35_expected
         });
@@ -1112,6 +1435,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q37_score = (q37_1_correct ? 1 : 0) + (q37_2_correct ? 1 : 0) + (q37_3_correct ? 1 : 0);
         const q37_perfect = q37_score === 3;
+        const q37_points = (q37_score / 3) * 1000;
         
         results.push({
             questionNum: 37,
@@ -1119,6 +1443,8 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q37_perfect,
             partialScore: q37_score,
             totalParts: 3,
+            points: Math.round(q37_points),
+            maxPoints: 1000,
             answer: `A: ${q37_1 || 'No answer'}, B: ${q37_2 || 'No answer'}, C: ${q37_3 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q37_1}, B: ${correctAnswers.q37_2}, C: ${correctAnswers.q37_3}`
         });
@@ -1134,6 +1460,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 38,
             questionText: questionTexts.q38,
             correct: q38_correct,
+            points: q38_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q38 || 'No answer',
             correctAnswer: correctAnswers.q38
         });
@@ -1149,6 +1477,8 @@ document.addEventListener('DOMContentLoaded', function() {
             questionNum: 39,
             questionText: questionTexts.q39,
             correct: q39_correct,
+            points: q39_correct ? 1000 : 0,
+            maxPoints: 1000,
             answer: q39 || 'No answer',
             correctAnswer: correctAnswers.q39
         });
@@ -1169,6 +1499,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const q40_score = (q40_1_correct ? 1 : 0) + (q40_2_correct ? 1 : 0) + (q40_3_correct ? 1 : 0) + (q40_4_correct ? 1 : 0);
         const q40_perfect = q40_score === 4;
+        const q40_points = (q40_score / 4) * 1000;
         
         results.push({
             questionNum: 40,
@@ -1176,48 +1507,70 @@ document.addEventListener('DOMContentLoaded', function() {
             correct: q40_perfect,
             partialScore: q40_score,
             totalParts: 4,
+            points: Math.round(q40_points),
+            maxPoints: 1000,
             answer: `A: ${q40_1 || 'No answer'}, B: ${q40_2 || 'No answer'}, C: ${q40_3 || 'No answer'}, D: ${q40_4 || 'No answer'}`,
             correctAnswer: `A: ${correctAnswers.q40_1}, B: ${correctAnswers.q40_2}, C: ${correctAnswers.q40_3}, D: ${correctAnswers.q40_4}`
         });
         
         if (q40_perfect) correctCount++;
 
+        // Calculate total points (out of 1000 per question)
+        let totalPoints = 0;
+        let maxPoints = totalQuestions * 1000;
+        results.forEach(result => {
+            if (result.points !== undefined) {
+                totalPoints += result.points;
+            } else {
+                totalPoints += result.correct ? 1000 : 0;
+            }
+        });
+        
+        const score = Math.round((totalPoints / maxPoints) * 1000);
+        
         return {
             results: results,
             correctCount: correctCount,
             totalQuestions: totalQuestions,
-            score: Math.round((correctCount / totalQuestions) * 100)
+            totalPoints: totalPoints,
+            maxPoints: maxPoints,
+            score: score // Out of 1000
         };
     }
 
     function displayResults(resultsData) {
-        const { results, correctCount, totalQuestions, score } = resultsData;
+        const { results, correctCount, totalQuestions, totalPoints, maxPoints, score } = resultsData;
         
         let html = '<div class="result-summary">';
         html += `<h3>Test Results</h3>`;
-        html += `<div class="score">Score: <span class="score-number">${correctCount}/${totalQuestions}</span> (${score}%)</div>`;
+        html += `<div class="score">Score: <span class="score-number">${score}/1000</span> (${correctCount}/${totalQuestions} questions correct)</div>`;
+        html += `<div style="margin-top: 10px; color: var(--text-secondary);">Points: ${totalPoints}/${maxPoints}</div>`;
         html += '</div>';
 
         html += '<h3 style="margin-top: 30px; margin-bottom: 15px;">Question Results:</h3>';
         
         results.forEach(result => {
             const statusClass = result.correct ? 'correct' : 'incorrect';
-            const statusText = result.correct ? '✓ CORRECT' : '✗ INCORRECT';
-            const statusIcon = result.correct ? '✓' : '✗';
+            const statusText = result.correct ? '✓ Correct' : '✗ Incorrect';
             
             html += `<div class="result-item ${statusClass}">`;
-            html += `<div class="result-item-header">`;
-            html += `<span class="result-question-num">Question ${result.questionNum}: ${result.questionText}</span>`;
+            html += '<div class="result-item-header">';
+            html += `<span class="result-question-num">${result.questionText}</span>`;
             html += `<span class="result-status ${statusClass}">${statusText}</span>`;
-            html += `</div>`;
+            html += '</div>';
             
-            if (result.partialScore !== undefined) {
-                html += `<p><strong>Your score:</strong> ${result.partialScore}/${result.totalParts} parts correct</p>`;
+            // Show points for this question
+            const questionPoints = result.points !== undefined ? result.points : (result.correct ? 1000 : 0);
+            const questionMax = result.maxPoints || 1000;
+            html += `<p style="margin-top: 5px; font-weight: bold; color: var(--text-primary);">Points: ${questionPoints}/${questionMax}</p>`;
+            
+            if (result.partialScore !== undefined && result.totalParts !== undefined) {
+                html += `<p style="margin-top: 5px; color: var(--text-secondary);">Partial Score: ${result.partialScore}/${result.totalParts} parts correct</p>`;
             }
             
-            html += `<p><strong>Your answer:</strong> ${result.answer}</p>`;
+            html += `<p style="margin-top: 10px;"><strong>Your answer:</strong> ${result.answer}</p>`;
             html += `<p><strong>Correct answer:</strong> ${result.correctAnswer}</p>`;
-            html += `</div>`;
+            html += '</div>';
         });
 
         // Practice section for incorrect answers
