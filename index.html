@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity Coding Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Unity Coding Test</h1>
+        
+        <form id="testForm">
+            <!-- Question 1: True/False about Unity naming conventions -->
+            <div class="question" id="q1">
+                <div class="question-header">
+                    <span class="question-number">Question 1 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each code snippet, select <strong>True</strong> if it is using Unity naming conventions or <strong>False</strong> if it is not.</p>
+                    <p class="note">You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>public class playerScript : Monobehaviour {
+public light playerLight;
+void playerfunction () {
+playerlight. Enabled = !playerlight. Enabled;
+}
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q1_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q1_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>Public Class playerScript : MonoBehaviour {
+Public Light PlayerLight;
+Void PlayerFunction () {
+PlayerLight.Enabled = !PlayerLight.Enabled;
+}
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q1_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q1_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>public class PlayerScript : MonoBehaviour {
+public Light playerLight;
+void PlayerFunction () {
+playerLight.enabled = !playerLight.enabled;
+}
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q1_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q1_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2: Multiple choice about Debug.Log -->
+            <div class="question" id="q2">
+                <div class="question-header">
+                    <span class="question-number">Question 2 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which statement will log the message "Hello World!" to the console window?</p>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q2" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <code>Console.Log("Hello World!");</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q2" value="B">
+                        <span class="choice-label">B.</span>
+                        <code>Debug.Log = "Hello World!";</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q2" value="C">
+                        <span class="choice-label">C.</span>
+                        <code>Console.Log = "Hello World!";</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q2" value="D">
+                        <span class="choice-label">D.</span>
+                        <code>Debug.Log("Hello World!");</code>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 3: Fill-in-the-blank with operators -->
+            <div class="question" id="q3">
+                <div class="question-header">
+                    <span class="question-number">Question 3 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You need to increase lives and score by 1 if coins is equivalent to extralife, or bonus, or both.</p>
+                    <p>Complete the code by selecting the correct option from each drop-down list.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>if (coins <span class="dropdown-wrapper"><select name="q3_1" class="dropdown" required>
+    <option value="">---</option>
+    <option value="&&">&&</option>
+    <option value="==">==</option>
+    <option value="!=">!=</option>
+    <option value="++">++</option>
+    <option value="%">%</option>
+    <option value="||">||</option>
+    <option value="/*">/*</option>
+</select></span> extralife <span class="dropdown-wrapper"><select name="q3_2" class="dropdown" required>
+    <option value="">---</option>
+    <option value="&&">&&</option>
+    <option value="==">==</option>
+    <option value="!=">!=</option>
+    <option value="++">++</option>
+    <option value="%">%</option>
+    <option value="||">||</option>
+    <option value="/*">/*</option>
+</select></span> coins <span class="dropdown-wrapper"><select name="q3_3" class="dropdown" required>
+    <option value="">---</option>
+    <option value="&&">&&</option>
+    <option value="==">==</option>
+    <option value="!=">!=</option>
+    <option value="++">++</option>
+    <option value="%">%</option>
+    <option value="||">||</option>
+    <option value="/*">/*</option>
+</select></span> bonus)
+{
+    lives +=1;
+    score += 1000;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 4: Multiple choice about modulo operator -->
+            <div class="question" id="q4">
+                <div class="question-header">
+                    <span class="question-number">Question 4 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which comment accurately describes what the line of code below is doing?</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>if (i % 2 == 0){</code></pre>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q4" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text">//check if 2% of the i integer variable is equal to 0</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q4" value="B">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">//check for the percentage of numbers in the i integer variable that are the number 2</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q4" value="C">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">//check the i integer variable is divisible by 2 with the remainder 0</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q4" value="D">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">//check if the i integer variable has any 0s in it</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 5: Fill-in-the-blank for UI text -->
+            <div class="question" id="q5">
+                <div class="question-header">
+                    <span class="question-number">Question 5 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You are writing code to display text to the User Interface. Complete the code by selecting the correct option from each drop-down list.</p>
+                </div>
+                
+                <div class="fill-blank-container">
+                    <div class="code-snippet code-with-dropdowns">
+                        <pre><code>using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+<span class="dropdown-wrapper"><select name="q5_1" class="dropdown" required>
+    <option value="">--- Select Option ---</option>
+    <option value="option1">myText.text = ("Score: "+score.ToString());</option>
+    <option value="option2">using UnityEngine.Text;</option>
+    <option value="option3">public Text myText;</option>
+</select></span>
+public class ScoreManager : MonoBehaviour
+{
+    public int score = 0;
+    <span class="dropdown-wrapper"><select name="q5_2" class="dropdown" required>
+        <option value="">--- Select Option ---</option>
+        <option value="option1">myText.text = ("Score: "+score.ToString());</option>
+        <option value="option2">using UnityEngine.Text;</option>
+        <option value="option3">public Text myText;</option>
+    </select></span>
+    public void Score (int points)
+    {
+        Debug.Log ("Scored points");
+        score += points;
+        <span class="dropdown-wrapper"><select name="q5_3" class="dropdown" required>
+            <option value="">--- Select Option ---</option>
+            <option value="option1">myText.text = ("Score: "+score.ToString());</option>
+            <option value="option2">using UnityEngine.Text;</option>
+            <option value="option3">public Text myText;</option>
+        </select></span>
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 6: Multiple choice about Random.Range -->
+            <div class="question" id="q6">
+                <div class="question-header">
+                    <span class="question-number">Question 6 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which comment would correctly represent what is being done in the code snippet below?</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>int day = Random.Range(1, 31);</code></pre>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q6" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text">// changes the day integer to a round number</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q6" value="B">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">// creates a number between 1 and 31</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q6" value="C">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">// increases the day by 1 until you hit the maximum of 32</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q6" value="D">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">// creates a number between 1 and 32</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 7: Multiple choice about NullReferenceException -->
+            <div class="question" id="q7">
+                <div class="question-header">
+                    <span class="question-number">Question 7 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which variable is Null (not set to an instance of an object)?</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>Error: NullReferenceException: Object reference not set to an instance of an object CoolBook.Start ()
+
+public class Author {
+    public string name;
+}
+
+public class Book {
+    public string title;
+    public Author author;
+    public int pageCount;
+    public bool isReleased;
+    
+    public Book(string bookTitle, string authName, int bookLength) {
+        this.title = bookTitle;
+        this.pageCount = bookLength;
+        this.isReleased = false;
+    }
+}
+
+public class CoolBook {
+    public void Start() {
+        Book coolBook = new Book("Cool Book", "John Smith", 300);
+        Debug.Log(coolBook.title);
+        Debug.Log(coolBook.author.name);
+        Debug.Log(coolBook.pageCount);
+        Debug.Log(coolBook.isReleased);
+    }
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q7" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <code>coolBook.title</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q7" value="B">
+                        <span class="choice-label">B.</span>
+                        <code>coolBook.author</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q7" value="C">
+                        <span class="choice-label">C.</span>
+                        <code>coolBook.pageCount</code>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q7" value="D">
+                        <span class="choice-label">D.</span>
+                        <code>coolBook.isReleased</code>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 8: True/False about UI buttons -->
+            <div class="question" id="q8">
+                <div class="question-header">
+                    <span class="question-number">Question 8 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Review the sample code snippet.</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>public class UILightOn : MonoBehaviour {
+    public Image lightAsset;
+    public Button button1;
+    public Button button2;
+    public Button button3;
+    
+    void Start () {
+        button1.onClick.AddListener(LightBulbOn);
+    }
+}</code></pre>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>onClick AddListener called inside the Start function so button1 will turn the color of lightAsset to green.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q8_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q8_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>An OnTriggerEnter2D function needs to be used to detect button presses so only button3 will turn the color of lightAsset to green.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q8_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q8_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>onClick AddListener can be called inside the Update function so button2 will turn the color of lightAsset to green.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q8_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q8_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 9: Order code snippets -->
+            <div class="question" id="q9">
+                <div class="question-header">
+                    <span class="question-number">Question 9 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You need to create a component that is to be attached to a non-player character's hand object. It is used for attaching a prop to the hand and retrieving prop PropSpecs. The prop can be a sword, staff, etc.</p>
+                    <p>You need to initiate the code so the prop and prop data are declared when the scene begins. The prop should only be attached to the character's hand when this Component is enabled.</p>
+                    <p><strong>In which order should you place the code snippets to complete the code?</strong></p>
+                    <p>Select the correct order from the dropdown lists below.</p>
+                </div>
+                
+                <div class="order-container">
+                    <div class="snippets-list">
+                        <div class="snippet-item">
+                            <span class="snippet-label">Position 1:</span>
+                            <select name="q9_1" class="order-dropdown" required>
+                                <option value="">--- Select ---</option>
+                                <option value="A">Snippet A</option>
+                                <option value="B">Snippet B</option>
+                                <option value="C">Snippet C</option>
+                                <option value="D">Snippet D</option>
+                            </select>
+                        </div>
+                        <div class="snippet-item">
+                            <span class="snippet-label">Position 2:</span>
+                            <select name="q9_2" class="order-dropdown" required>
+                                <option value="">--- Select ---</option>
+                                <option value="A">Snippet A</option>
+                                <option value="B">Snippet B</option>
+                                <option value="C">Snippet C</option>
+                                <option value="D">Snippet D</option>
+                            </select>
+                        </div>
+                        <div class="snippet-item">
+                            <span class="snippet-label">Position 3:</span>
+                            <select name="q9_3" class="order-dropdown" required>
+                                <option value="">--- Select ---</option>
+                                <option value="A">Snippet A</option>
+                                <option value="B">Snippet B</option>
+                                <option value="C">Snippet C</option>
+                                <option value="D">Snippet D</option>
+                            </select>
+                        </div>
+                        <div class="snippet-item">
+                            <span class="snippet-label">Position 4:</span>
+                            <select name="q9_4" class="order-dropdown" required>
+                                <option value="">--- Select ---</option>
+                                <option value="A">Snippet A</option>
+                                <option value="B">Snippet B</option>
+                                <option value="C">Snippet C</option>
+                                <option value="D">Snippet D</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="snippets-code">
+                        <div class="snippet-code-block">
+                            <strong>Snippet A:</strong>
+                            <pre><code>private void OnEnable() {
+    propSpecs = prop.GetComponent<PropSpecs>();
+    this.damage = propSpecs.damage;
+    this.durability = propSpecs.durability;
+}</code></pre>
+                        </div>
+                        <div class="snippet-code-block">
+                            <strong>Snippet B:</strong>
+                            <pre><code>public class AttachProp : MonoBehaviour {
+    public Transform prop;
+    private PropSpecs propSpecs;
+    private float damage;
+    private float durability;</code></pre>
+                        </div>
+                        <div class="snippet-code-block">
+                            <strong>Snippet C:</strong>
+                            <pre><code>private void Awake () {
+    prop.parent = transform;
+    prop.position = transform.localPosition;
+    prop.rotation = transform.localRotation;
+}</code></pre>
+                        </div>
+                        <div class="snippet-code-block">
+                            <strong>Snippet D:</strong>
+                            <pre><code>}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 10: Fill-in-the-blank for Debug.Log Color -->
+            <div class="question" id="q10">
+                <div class="question-header">
+                    <span class="question-number">Question 10 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Using the class below, create a Debug.Log call that would log the value of the variable color as shown below.</p>
+                    <p><strong>Expected output:</strong> "Color: (0.258,0.525,0.956,1)"</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>using UnityEngine;
+
+public class Player : MonoBehaviour
+{
+    public Color color;
+
+    public void Start()
+    {
+        //The log will go here.
+        Debug.Log("Color:" + <span class="dropdown-wrapper"><select name="q10" class="dropdown code-dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="color">color</option>
+            <option value="color.ToString()">color.ToString()</option>
+            <option value="color.r">color.r</option>
+            <option value="color.g">color.g</option>
+            <option value="color.r + color.g">color.r + color.g</option>
+        </select></span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 11: Matching exercise -->
+            <div class="question" id="q11">
+                <div class="question-header">
+                    <span class="question-number">Question 11 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Move each window type from the list on the right to its definition on the left.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="matching-container">
+                    <div class="matching-left">
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>This window contains a list of every GameObject in the current Scene.</p>
+                            </div>
+                            <select name="q11_1" class="match-dropdown" required>
+                                <option value="">--- Select Window Type ---</option>
+                                <option value="1">The Hierarchy Windows</option>
+                                <option value="2">The Inspector Windows</option>
+                                <option value="3">The Scene Windows</option>
+                                <option value="4">The Project Windows</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>This window is your interactive view into the world you are creating.</p>
+                            </div>
+                            <select name="q11_2" class="match-dropdown" required>
+                                <option value="">--- Select Window Type ---</option>
+                                <option value="1">The Hierarchy Windows</option>
+                                <option value="2">The Inspector Windows</option>
+                                <option value="3">The Scene Windows</option>
+                                <option value="4">The Project Windows</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>In this window, you can access and manage the assets that belong to your project.</p>
+                            </div>
+                            <select name="q11_3" class="match-dropdown" required>
+                                <option value="">--- Select Window Type ---</option>
+                                <option value="1">The Hierarchy Windows</option>
+                                <option value="2">The Inspector Windows</option>
+                                <option value="3">The Scene Windows</option>
+                                <option value="4">The Project Windows</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>This window displays detailed information about the currently selected GameObject, including all attached components and their properties, and allows you to modify the functionality of GameObjects in your Scene.</p>
+                            </div>
+                            <select name="q11_4" class="match-dropdown" required>
+                                <option value="">--- Select Window Type ---</option>
+                                <option value="1">The Hierarchy Windows</option>
+                                <option value="2">The Inspector Windows</option>
+                                <option value="3">The Scene Windows</option>
+                                <option value="4">The Project Windows</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 12: Animator SetBool -->
+            <div class="question" id="q12">
+                <div class="question-header">
+                    <span class="question-number">Question 12 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Given the reference type Animator, use the drop-down lists to set the animator's Boolean parameters to Attacking and to false.</p>
+                    <p>Complete the code by selecting the correct options from the drop-down lists.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>Animator animator;
+
+void OnTriggerEnter2D (Collider2D collider)
+{
+    GameObject obj = collider.gameObject;
+
+    if(obj.GetComponent<Player>())
+    {
+        <span class="dropdown-wrapper"><select name="q12_1" class="dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="animator">animator</option>
+            <option value="GetComponent&lt;Animator&gt;">GetComponent&lt;Animator&gt;</option>
+            <option value="obj">obj</option>
+            <option value="collider">collider</option>
+        </select></span>.SetBool(<span class="dropdown-wrapper"><select name="q12_2" class="dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="(&quot;Attacking&quot;, false)">("Attacking", false)</option>
+            <option value="(&quot;Attacking&quot;, true)">("Attacking", true)</option>
+            <option value="(Attacking, false)">(Attacking, false)</option>
+            <option value="(&quot;Attacking&quot;)">("Attacking")</option>
+        </select></span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 13: ECS True/False -->
+            <div class="question" id="q13">
+                <div class="question-header">
+                    <span class="question-number">Question 13 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each code snippet, select <strong>True</strong> if it is using ECS or <strong>False</strong> if it is not.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using Unity.Entities;
+using UnityEngine;
+
+public class KeyboardComponent : MonoBehaviour
+{
+    public float Horizontal;
+    public float Vertical;
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q13_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q13_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using UnityEngine;
+using System.Collections;
+
+public class KeyboardScript : MonoBehaviour
+{
+    public class Wizard
+    {
+        public int fireballs;
+        public int shields;
+        public int missiles;
+    }
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q13_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q13_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using UnityEngine;
+using System.Collections;
+
+public class Movement : MonoBehaviour
+{
+    public float speed;
+    public float turnSpeed;
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q13_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q13_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 14: Material.SetColor -->
+            <div class="question" id="q14">
+                <div class="question-header">
+                    <span class="question-number">Question 14 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Use the following information from the API documentation to answer this question.</p>
+                </div>
+                
+                <div class="api-docs">
+                    <h4>[Beginning of API documentation]</h4>
+                    <div class="code-snippet">
+                        <pre><code>Material.SetColor();
+
+Declaration:
+public void SetColor(string name, Color value);
+
+Parameters:
+name: Property name, e.g. "_Color".
+value: Color value to set.
+
+Description:
+Sets a named color value.
+
+[End of API documentation]</code></pre>
+                    </div>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>material.SetColor(<span class="dropdown-wrapper"><select name="q14_1" class="dropdown" required>
+    <option value="">--- Select ---</option>
+    <option value="&quot;_Color&quot;">"_Color"</option>
+    <option value="Color red">Color red</option>
+    <option value="&quot;red&quot;">"red"</option>
+    <option value="name">name</option>
+</select></span>, <span class="dropdown-wrapper"><select name="q14_2" class="dropdown" required>
+    <option value="">--- Select ---</option>
+    <option value="&quot;_Color&quot;">"_Color"</option>
+    <option value="Color red">Color red</option>
+    <option value="&quot;red&quot;">"red"</option>
+    <option value="name">name</option>
+</select></span>);</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 15: Input methods -->
+            <div class="question" id="q15">
+                <div class="question-header">
+                    <span class="question-number">Question 15 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Given the incomplete if statements, use the correct Input Method to make the statements log the correct message to the console. Select the correct options in the drop-down lists.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>void Update()
+{
+    if (Input.<span class="dropdown-wrapper"><select name="q15_1" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="GetKey(KeyCode.LeftArrow)">GetKey(KeyCode.LeftArrow)</option>
+        <option value="GetKeyDown(KeyCode.LeftArrow)">GetKeyDown(KeyCode.LeftArrow)</option>
+        <option value="GetKeyUp(KeyCode.LeftArrow)">GetKeyUp(KeyCode.LeftArrow)</option>
+    </select></span>)
+    {
+        Debug.Log("Left Arrow key is being held down");
+    }
+    if (Input.<span class="dropdown-wrapper"><select name="q15_2" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="GetKey(KeyCode.UpArrow)">GetKey(KeyCode.UpArrow)</option>
+        <option value="GetKeyDown(KeyCode.UpArrow)">GetKeyDown(KeyCode.UpArrow)</option>
+        <option value="GetKeyUp(KeyCode.UpArrow)">GetKeyUp(KeyCode.UpArrow)</option>
+    </select></span>)
+    {
+        Debug.Log("Up Arrow key was pressed once");
+    }
+    if (Input.<span class="dropdown-wrapper"><select name="q15_3" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="GetKey(KeyCode.DownArrow)">GetKey(KeyCode.DownArrow)</option>
+        <option value="GetKeyDown(KeyCode.DownArrow)">GetKeyDown(KeyCode.DownArrow)</option>
+        <option value="GetKeyUp(KeyCode.DownArrow)">GetKeyUp(KeyCode.DownArrow)</option>
+    </select></span>)
+    {
+        Debug.Log("Down Arrow key was released");
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 16: Multiple choice with 2 answers (checkbox) -->
+            <div class="question" id="q16">
+                <div class="question-header">
+                    <span class="question-number">Question 16 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You are adding comments to your code.</p>
+                    <p><strong>Which two comments accurately describe what the code is doing? (Choose 2.)</strong></p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>if (Input.GetButtonDown("Fire1"))
+{
+    Rigidbody clone;
+    clone.velocity = transform.TransformDirection(Vector3.forward * 10);
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice checkbox-choice">
+                    <label class="choice">
+                        <input type="checkbox" name="q16" value="A">
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text">// Give the cloned object an initial velocity along the current object's Z axis.</span>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q16" value="B">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">// Instantiate a clone at the position. Have it fire on enemies.</span>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q16" value="C">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">// Instantiate the projectile at the position and rotation of this transform</span>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q16" value="D">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">// Destroy original object and replace with clone.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 17: Transform.Translate -->
+            <div class="question" id="q17">
+                <div class="question-header">
+                    <span class="question-number">Question 17 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You have been asked to complete a simple move script using the transform component of the GameObject.</p>
+                    <p>Given the API method, complete the script by selecting the correct option from the drop-down list.</p>
+                </div>
+                
+                <div class="api-docs">
+                    <h4>API Definitions:</h4>
+                    <div class="code-snippet">
+                        <pre><code>public void SetPositionAndRotation(Vector3 position, Quaternion rotation);
+public Vector3 TransformDirection(Vector3 direction);
+public Vector3 TransformVector(Vector3 vector);
+public void Translate(Vector3 translation);</code></pre>
+                    </div>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ExampleScript : MonoBehaviour {
+
+    public float speed = 20f;
+    private Vector3 move;
+
+    private void Update(){
+        move = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+
+        transform.<span class="dropdown-wrapper"><select name="q17" class="dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="SetPositionAndRotation">SetPositionAndRotation</option>
+            <option value="TransformDirection">TransformDirection</option>
+            <option value="TransformVector">TransformVector</option>
+            <option value="Translate">Translate</option>
+        </select></span>(move * Time.deltaTime * speed);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 18: Animator matching -->
+            <div class="question" id="q18">
+                <div class="question-header">
+                    <span class="question-number">Question 18 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Move each Animator Function from the list on the left to its Parameter on the right.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="matching-container">
+                    <div class="matching-left">
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <code>("Animation", 1);</code>
+                            </div>
+                            <select name="q18_1" class="match-dropdown" required>
+                                <option value="">--- Select Parameter ---</option>
+                                <option value="SetFloat">SetFloat</option>
+                                <option value="SetInt">SetInt</option>
+                                <option value="SetTrigger">SetTrigger</option>
+                                <option value="SetBool">SetBool</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <code>("Animation", .5f);</code>
+                            </div>
+                            <select name="q18_2" class="match-dropdown" required>
+                                <option value="">--- Select Parameter ---</option>
+                                <option value="SetFloat">SetFloat</option>
+                                <option value="SetInt">SetInt</option>
+                                <option value="SetTrigger">SetTrigger</option>
+                                <option value="SetBool">SetBool</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <code>("Animation", false);</code>
+                            </div>
+                            <select name="q18_3" class="match-dropdown" required>
+                                <option value="">--- Select Parameter ---</option>
+                                <option value="SetFloat">SetFloat</option>
+                                <option value="SetInt">SetInt</option>
+                                <option value="SetTrigger">SetTrigger</option>
+                                <option value="SetBool">SetBool</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <code>("Animation");</code>
+                            </div>
+                            <select name="q18_4" class="match-dropdown" required>
+                                <option value="">--- Select Parameter ---</option>
+                                <option value="SetFloat">SetFloat</option>
+                                <option value="SetInt">SetInt</option>
+                                <option value="SetTrigger">SetTrigger</option>
+                                <option value="SetBool">SetBool</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 19: Start/OnTriggerEnter -->
+            <div class="question" id="q19">
+                <div class="question-header">
+                    <span class="question-number">Question 19 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>The project genre is a top down arcade. The projectile prefab released by the player has its own Collider with Is Trigger set to true.</p>
+                    <p>This projectile prefab is Pooled in the scene rather than being Instantiated and needs a component initialized from another GameObject. It should only be initialized once.</p>
+                    <p>The code is on the projectile prefab and not the player.</p>
+                    <p>Complete the code by selecting the correct option from each drop-down list.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>private void <span class="dropdown-wrapper"><select name="q19_1" class="dropdown" required>
+    <option value="">--- Select ---</option>
+    <option value="Start">Start</option>
+    <option value="OnTriggerEnter">OnTriggerEnter</option>
+</select></span> ()
+{
+    PUManage = GameObject.Find("PowerUp_Manager").GetComponent<PowerUpManagement>();
+    meshRenderer = GetComponentInChildren<MeshRenderer>();
+    instancedMaterial = meshRenderer.material;
+    instancedMaterial.SetColor("_TintColor", initialColor);
+}
+
+private void <span class="dropdown-wrapper"><select name="q19_2" class="dropdown" required>
+    <option value="">--- Select ---</option>
+    <option value="Start">Start</option>
+    <option value="OnTriggerEnter">OnTriggerEnter</option>
+</select></span> (Collider other)
+{
+    if(isAlive && other.tag != "Player" && other.tag != "CULL")
+    {
+        isAlive = false;
+        PoolManager.Pool["Projectile"].Despawn(transform, penetration);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 20: Method declaration -->
+            <div class="question" id="q20">
+                <div class="question-header">
+                    <span class="question-number">Question 20 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Read the class provided below. Then create the correct declaration for the method that would accept arguments. Complete the code by selecting the correct options from the drop-down lists.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>using UnityEngine;
+using UnityEngine.UI;
+
+public class UnlockGate : MonoBehaviour
+{
+    public Text textToDisplay;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Gate"))
+        {
+            other.gameObject.SetActive(false);
+            // This line calls the method that needs to be declared:
+            SetMessageToDisplay("Congratulations! You have unlocked the gate!");
+        }
+    }
+
+    // The line below is where the user needs to complete the method declaration:
+    private <span class="dropdown-wrapper"><select name="q20_1" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="void">void</option>
+        <option value="string">string</option>
+        <option value="int">int</option>
+        <option value="bool">bool</option>
+    </select></span> <span class="dropdown-wrapper"><select name="q20_2" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="SetMessageToDisplay">SetMessageToDisplay</option>
+        <option value="SetMessage ToDisplay">SetMessage ToDisplay</option>
+        <option value="SetMessage">SetMessage</option>
+        <option value="ToDisplay">ToDisplay</option>
+    </select></span>(<span class="dropdown-wrapper"><select name="q20_3" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="string stringToDisplay">string stringToDisplay</option>
+        <option value="string">string</option>
+        <option value="stringToDisplay">stringToDisplay</option>
+        <option value="(string stringToDisplay)">(string stringToDisplay)</option>
+    </select></span>)
+    {
+        textToDisplay.text = stringToDisplay;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 21: Operators matching -->
+            <div class="question" id="q21">
+                <div class="question-header">
+                    <span class="question-number">Question 21 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Move the correct operator from the list on the left to its description on the right.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="matching-container">
+                    <div class="matching-left">
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>not equal to</p>
+                            </div>
+                            <select name="q21_1" class="match-dropdown" required>
+                                <option value="">--- Select Operator ---</option>
+                                <option value="+">+</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                                <option value="++">++</option>
+                                <option value="%">%</option>
+                                <option value="=">=</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>increment</p>
+                            </div>
+                            <select name="q21_2" class="match-dropdown" required>
+                                <option value="">--- Select Operator ---</option>
+                                <option value="+">+</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                                <option value="++">++</option>
+                                <option value="%">%</option>
+                                <option value="=">=</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>equal to</p>
+                            </div>
+                            <select name="q21_3" class="match-dropdown" required>
+                                <option value="">--- Select Operator ---</option>
+                                <option value="+">+</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                                <option value="++">++</option>
+                                <option value="%">%</option>
+                                <option value="=">=</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>string concatenation</p>
+                            </div>
+                            <select name="q21_4" class="match-dropdown" required>
+                                <option value="">--- Select Operator ---</option>
+                                <option value="+">+</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                                <option value="++">++</option>
+                                <option value="%">%</option>
+                                <option value="=">=</option>
+                            </select>
+                        </div>
+                        
+                        <div class="match-item">
+                            <div class="match-definition">
+                                <p>assignment</p>
+                            </div>
+                            <select name="q21_5" class="match-dropdown" required>
+                                <option value="">--- Select Operator ---</option>
+                                <option value="+">+</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                                <option value="++">++</option>
+                                <option value="%">%</option>
+                                <option value="=">=</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 22: Mecanim Animator State -->
+            <div class="question" id="q22">
+                <div class="question-header">
+                    <span class="question-number">Question 22 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p><strong>The Axis parameter uses integers.</strong></p>
+                    <p><strong>Transition Rules:</strong></p>
+                    <ul>
+                        <li>When the Axis is equal to 0, the animation transitions to Y state.</li>
+                        <li>When the Axis is equal to 1, the animation transitions to X state.</li>
+                        <li>When the Axis is equal to 2, the animation transitions to Z state.</li>
+                    </ul>
+                    <p><strong>Select which state the Mecanim animation will end up on if the value is greater than 2. To answer, select the appropriate options in the answer area.</strong></p>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q22" value="Y" required>
+                        <span class="choice-label">Y</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q22" value="X">
+                        <span class="choice-label">X</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q22" value="Z">
+                        <span class="choice-label">Z</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q22" value="Exit">
+                        <span class="choice-label">Exit</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q22" value="Empty">
+                        <span class="choice-label">Empty</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 23: State Machine Transitions True/False -->
+            <div class="question" id="q23">
+                <div class="question-header">
+                    <span class="question-number">Question 23 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each statement about state machine transitions in Unity's Animator Controller, select True or False.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>You can add transitions from the Entry node to other states to control which state the state machine should begin in.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q23_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q23_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>An animation state can only have one transition to another animation state.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q23_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q23_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>State machines can be created with or without a default state.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q23_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q23_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 24: OnMouseDown method -->
+            <div class="question" id="q24">
+                <div class="question-header">
+                    <span class="question-number">Question 24 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You have been asked to create a function (only available in this script) that will turn on or turn off a GameObject. This GameObject is controlled by mouse clicks on a different 3D object in the scene.</p>
+                    <p>Complete the code by selecting the correct option from each drop-down list.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>public class TurnOnDisplay : MonoBehaviour
+{
+    public GameObject displayPane;
+
+    private void Start()
+    {
+        displayPane.SetActive(false);
+    }
+
+    <span class="dropdown-wrapper"><select name="q24_1" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="private">private</option>
+        <option value="public">public</option>
+        <option value="protected">protected</option>
+        <option value="void">void</option>
+    </select></span> <span class="dropdown-wrapper"><select name="q24_2" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="void">void</option>
+        <option value="bool">bool</option>
+        <option value="GameObject">GameObject</option>
+        <option value="OnMouseEnter()">OnMouseEnter()</option>
+    </select></span> <span class="dropdown-wrapper"><select name="q24_3" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="OnMouseDown()">OnMouseDown()</option>
+        <option value="OnMouseEnter()">OnMouseEnter()</option>
+        <option value="MouseInfo">MouseInfo</option>
+        <option value="void">void</option>
+    </select></span>
+    {
+        if (displayPane.activeInHierarchy == false)
+        {
+            displayPane.SetActive(true);
+        }
+        else
+        {
+            displayPane.SetActive(false);
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 25: Compilation errors (multiple choice with 2 answers) -->
+            <div class="question" id="q25">
+                <div class="question-header">
+                    <span class="question-number">Question 25 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which two variable comparisons prevent the code from compiling? (Choose 2.)</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>[SerializeField]
+List&lt;GameObject&gt; gameObjects;
+Dictionary&lt;string, GameObject&gt; dictionary;
+int myInt;
+string myString;
+List&lt;GameObject&gt; list;
+float myFloat;
+
+private void Start()
+{
+    if (dictionary == myInt)
+    {
+        //do thing.
+    }
+    if (myFloat > myInt)
+    {
+        //do thing.
+    }
+    if (myString == "list")
+    {
+        //do thing.
+    }
+    if (myFloat <= 100)
+    {
+        //do thing.
+    }
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice checkbox-choice">
+                    <label class="choice">
+                        <input type="checkbox" name="q25" value="A">
+                        <span class="choice-label">A.</span>
+                        <code>dictionary == myInt</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q25" value="B">
+                        <span class="choice-label">B.</span>
+                        <code>myFloat > myInt</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q25" value="C">
+                        <span class="choice-label">C.</span>
+                        <code>myString == "list"</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q25" value="D">
+                        <span class="choice-label">D.</span>
+                        <code>myFloat <= myString</code>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 26: ECS True/False -->
+            <div class="question" id="q26">
+                <div class="question-header">
+                    <span class="question-number">Question 26 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each code snippet, select <strong>True</strong> if it is using ECS or <strong>False</strong> if it is not.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using UnityEngine;
+using System.Collections;
+
+public class Fireball : MonoBehaviour
+{
+    public Rigidbody fireballPrefab;
+    public Transform firePosition;
+    public float fireballSpeed;
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q26_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q26_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using Unity.Entities;
+using UnityEngine;
+
+public class ShieldComponent : MonoBehaviour
+{
+    public float Protection;
+    public float Size;
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q26_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q26_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>using Unity.Entities;
+using UnityEngine;
+
+public class EnemyMovementSystem : ComponentSystem
+{
+    public Rigidbody Rigidbody;
+    public InputComponent Inputcomponent;
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q26_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q26_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 27: Unity naming conventions True/False -->
+            <div class="question" id="q27">
+                <div class="question-header">
+                    <span class="question-number">Question 27 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each code snippet, select <strong>True</strong> if it is using Unity naming conventions or <strong>False</strong> if it is not.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>public class PlaySoundEffect : MonoBehaviour {
+public AudioSource enteringSound;
+public AudioSource leavingSound;</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q27_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q27_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>private void ontriggerenter (Collider Other)
+{
+    if(Other.compareTag("Player"))
+    {
+        PlaySound (enteringSound);
+    }
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q27_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q27_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="code-snippet">
+                            <pre><code>private void OnTriggerExit (Collider other)
+{
+    if (other.CompareTag("Player"))
+    {
+        PlaySound(leavingSound);
+    }
+}</code></pre>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q27_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q27_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 28: Rigidbody data type -->
+            <div class="question" id="q28">
+                <div class="question-header">
+                    <span class="question-number">Question 28 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Given the following code example, determine what the appropriate data type is to declare the variable <code>rb</code> in order to avoid a "Cannot implicitly convert type" error. Select the correct answer from the drop-down list.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>using UnityEngine;
+using System.Collections;
+
+public class ExampleClass : MonoBehaviour
+{
+    public Vector3 teleportPoint;
+    public <span class="dropdown-wrapper"><select name="q28" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="Rigidbody">Rigidbody</option>
+        <option value="GameObject">GameObject</option>
+        <option value="Component">Component</option>
+        <option value="Transform">Transform</option>
+    </select></span> rb;
+
+    void Start()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+    }
+
+    void FixedUpdate()
+    {
+        rb.MovePosition(transform.position + transform.forward * Time.deltaTime);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 29: GameObject null check -->
+            <div class="question" id="q29">
+                <div class="question-header">
+                    <span class="question-number">Question 29 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Complete the code by selecting the correct data type that will return a null value and then choose the correct variable name that will log a message to the console that the "object is null" from the drop-down lists.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code><span class="dropdown-wrapper"><select name="q29_1" class="dropdown" required>
+    <option value="">--- Select ---</option>
+    <option value="public GameObject projectile;">public GameObject projectile;</option>
+    <option value="Public GameObject projectile;">Public GameObject projectile;</option>
+    <option value="GameObject projectile;">GameObject projectile;</option>
+    <option value="public Rigidbody projectile;">public Rigidbody projectile;</option>
+</select></span>
+void Start ()
+{
+    if (<span class="dropdown-wrapper"><select name="q29_2" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="(projectile == null)">(projectile == null)</option>
+        <option value="projectile == null">projectile == null</option>
+        <option value="projectile != null">projectile != null</option>
+        <option value="projectile">projectile</option>
+    </select></span>)
+    {
+        Debug.Log("Object is null");
+    }
+    else
+    {
+        projectile = GameObject.FindWithTag("Projectile");
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 30: Rigidbody.AddForce -->
+            <div class="question" id="q30">
+                <div class="question-header">
+                    <span class="question-number">Question 30 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>To answer this question, use the AddForce API that accepts a Vector value and a numerical value. You need to apply a force value to a RigidBody that is attached to a GameObject. The force must move the object in the direction it is facing. You must use a force value that can be set in the inspector.</p>
+                    <p>Complete the code by selecting the correct options from the drop-down lists.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>using UnityEngine;
+using System.Collections;
+
+public class MovingThings : MonoBehaviour
+{
+    private float speedOfMotion;
+    public float speedForce;
+    private static float forceSpeed = 10f;
+    private Rigidbody rigidBody;
+
+    void Start()
+    {
+        speedOfMotion = 10f;
+        rigidBody = gameObject.GetComponent&lt;Rigidbody&gt;();
+    }
+
+    void FixedUpdate()
+    {
+        rigidBody.AddForce(<span class="dropdown-wrapper"><select name="q30_1" class="dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="transform.forward">transform.forward</option>
+            <option value="transform.up">transform.up</option>
+            <option value="transform.right">transform.right</option>
+            <option value="Vector3.forward">Vector3.forward</option>
+        </select></span> * <span class="dropdown-wrapper"><select name="q30_2" class="dropdown" required>
+            <option value="">--- Select ---</option>
+            <option value="speedForce">speedForce</option>
+            <option value="speedOfMotion">speedOfMotion</option>
+            <option value="forceSpeed">forceSpeed</option>
+            <option value="10f">10f</option>
+        </select></span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 31: Inspector window True/False -->
+            <div class="question" id="q31">
+                <div class="question-header">
+                    <span class="question-number">Question 31 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each statement about the inspector window, select True or False.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The Static checkbox is used to signify to the Unity Engine that an object will remain stationary.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q31_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q31_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The tag property can be used to enable multiple objects to be found at once using a MonoBehavior script.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q31_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q31_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The inspector window may be used to modify a prefab.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q31_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q31_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 32: Rigidbody.velocity error -->
+            <div class="question" id="q32">
+                <div class="question-header">
+                    <span class="question-number">Question 32 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>An error is being produced on line 34 stating: <strong>Error CS0120 An object reference is required for the non-static field, method, or property 'Rigidbody.velocity'</strong></p>
+                    <p>Select the correct option in the drop-down list to fix the error.</p>
+                    <p><strong>The original code snippet was:</strong> <code>Rigidbody.velocity = transform.forward * speed;</code></p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>private void Start()
+{
+    rb = GetComponent&lt;Rigidbody&gt;();
+}
+
+private void FixedUpdate()
+{
+    if (groundDetect)
+    {
+        if (this.isActiveAndEnabled && isOnGround)
+        {
+            if(moveType == MoveType.Velocity)
+            {
+                <span class="dropdown-wrapper"><select name="q32" class="dropdown" required>
+                    <option value="">--- Select ---</option>
+                    <option value="Rigidbody.velocity = transform.forward * speed;">Rigidbody.velocity = transform.forward * speed;</option>
+                    <option value="rb.velocity = transform.forward * speed;">rb.velocity = transform.forward * speed;</option>
+                    <option value="velocity = transform.forward * speed;">velocity = transform.forward * speed;</option>
+                    <option value="Rigidbody.rb.velocity = transform.forward * speed;">Rigidbody.rb.velocity = transform.forward * speed;</option>
+                </select></span>
+            }
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 34: Compile-time error line -->
+            <div class="question" id="q34">
+                <div class="question-header">
+                    <span class="question-number">Question 34 of 40</span>
+                </div>
+                <div class="question-text">
+                    <p>Which line will create the error?</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>public class Example : MonoBehaviour
+{
+    public float health = 100;
+    public int hitDamage;
+}
+
+private void OnCollisionEnter(Collision collision)
+{
+    HealthManager.CalculateHealth(14);
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q34" value="5" required>
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text">5</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q34" value="11">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">11</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q34" value="6">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">6</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q34" value="9">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">9</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 35: Dictionary initialization -->
+            <div class="question" id="q35">
+                <div class="question-header">
+                    <span class="question-number">Question 35 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Given the following script, you need to initialize the dictionary variable using the list of GameObjects. The key for each object should be the name of the GameObject.</p>
+                    <p>Select the correct code snippets to complete the task. Choose 3 snippets.</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>using System.Collections.Generic;
+using UnityEngine;
+
+public class MyClass: MonoBehaviour {
+    [SerializeField]
+    List&lt;GameObject&gt; gameObjects;
+
+    private Dictionary&lt;string, GameObject&gt; dictionary;
+
+    private void Start() {
+        dictionary = new Dictionary&lt;string, GameObject&gt;();
+        //your code will go here.
+    }
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice checkbox-choice">
+                    <label class="choice">
+                        <input type="checkbox" name="q35" value="A">
+                        <span class="choice-label">A.</span>
+                        <code>foreach (string in dictionary) {</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q35" value="B">
+                        <span class="choice-label">B.</span>
+                        <code>}</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q35" value="C">
+                        <span class="choice-label">C.</span>
+                        <code>dictionary.Add(gameObject.name, gameObject);</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q35" value="D">
+                        <span class="choice-label">D.</span>
+                        <code>foreach (var gameObject in gameObjects) {</code>
+                    </label>
+                    <label class="choice">
+                        <input type="checkbox" name="q35" value="E">
+                        <span class="choice-label">E.</span>
+                        <code>dictionary.Add(string.name, string);</code>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 37: Scene view positioning True/False -->
+            <div class="question" id="q37">
+                <div class="question-header">
+                    <span class="question-number">Question 37 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each statement about positioning objects in the scene view, select True or False.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The move tool can be configured to display either the local or the global orientation of an object.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q37_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q37_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The transform tool combines the move, rotate, and scale tools.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q37_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q37_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>An object can be moved, rotated, or scaled only if working in the 3D view.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q37_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q37_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 38: playerName not showing in inspector -->
+            <div class="question" id="q38">
+                <div class="question-header">
+                    <span class="question-number">Question 38 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>You have created a script and are trying to edit <code>playerName</code> in the inspector, but you cannot find it there.</p>
+                    <p>Which option best describes why <code>playerName</code> is not showing in the inspector?</p>
+                </div>
+                
+                <div class="code-snippet">
+                    <pre><code>using UnityEngine;
+using System.Collections;
+
+private class PlayerOne : MonoBehaviour
+{
+    private string playerName;
+
+    void Start ()
+    {
+        Debug.Log("This world will be saved by " + playerName);
+    }
+}</code></pre>
+                </div>
+                
+                <div class="multiple-choice">
+                    <label class="choice">
+                        <input type="radio" name="q38" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text"><code>playerName</code> should be declared as a public variable.</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q38" value="B">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">The option for scripts must be toggled on in the inspector.</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q38" value="C">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">The script needs to be run successfully on an object before the inspector can see it.</span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="q38" value="D">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">Variables can not be edited in the inspector.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 39: GetChildren return type -->
+            <div class="question" id="q39">
+                <div class="question-header">
+                    <span class="question-number">Question 39 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>Determine what type of return value the method should have.</p>
+                    <p>Complete the code by selecting the correct option from the drop-down list.</p>
+                </div>
+                
+                <div class="code-snippet code-with-dropdowns">
+                    <pre><code>public <span class="dropdown-wrapper"><select name="q39" class="dropdown" required>
+        <option value="">--- Select ---</option>
+        <option value="List&lt;Transform&gt;">List&lt;Transform&gt;</option>
+        <option value="Transform">Transform</option>
+        <option value="void">void</option>
+        <option value="List">List</option>
+        <option value="int">int</option>
+    </select></span> GetChildren(Transform tr) {
+    int childCount = tr.childCount;
+    var result = new List&lt;Transform&gt;();
+    for (int i = 0; i &lt; childCount; ++i) {
+        result.Add(tr.GetChild(i));
+    }
+    return result;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Question 40: Functions True/False -->
+            <div class="question" id="q40">
+                <div class="question-header">
+                    <span class="question-number">Question 40 of 40</span>
+                </div>
+                <div class="question-instructions">
+                    <p>For each statement about functions, select True or False.</p>
+                    <p class="note">Note: You will receive partial credit for each correct answer.</p>
+                </div>
+                
+                <div class="true-false-container">
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>The void keyword indicates that a function will return a null value.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q40_1" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q40_1" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>A function can be passed more than one type of parameter.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q40_2" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q40_2" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>A function will not execute unless it is called first.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q40_3" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q40_3" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="code-snippet-row">
+                        <div class="statement-text">
+                            <p>A function that returns a value must use the return keyword.</p>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="q40_4" value="true" required> TRUE
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="q40_4" value="false"> FALSE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-container">
+                <button type="submit" class="submit-btn">Submit Test</button>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        <div id="results" class="results hidden">
+            <h2>Results</h2>
+            <div id="results-content"></div>
+            <button id="retry-btn" class="retry-btn">Retake Test</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
