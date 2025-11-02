@@ -1,3 +1,369 @@
+// ============================================
+// STATISTICS AND PRACTICE MODE SYSTEM
+// ============================================
+
+// Save attempt statistics
+function saveAttemptStatistics(resultsData) {
+    const stats = getStatistics();
+    
+    // Get list of failed questions
+    const failedQuestions = [];
+    resultsData.results.forEach(result => {
+        if (!result.correct) {
+            failedQuestions.push(result.questionNum);
+        }
+    });
+    
+    // Try to get timer info from DOM elements
+    let timeUsed = null;
+    try {
+        const timerEnabledEl = document.getElementById('timerEnabled');
+        const timerMinutesEl = document.getElementById('timerMinutes');
+        const timerDisplayEl = document.getElementById('timerDisplay');
+        
+        if (timerEnabledEl && timerEnabledEl.checked && timerMinutesEl && timerDisplayEl) {
+            // If timer was running, calculate time used
+            const initialMinutes = parseInt(timerMinutesEl.value) || 0;
+            const displayText = timerDisplayEl.textContent || '00:00';
+            const [mins, secs] = displayText.split(':').map(Number);
+            const remainingSeconds = (mins || 0) * 60 + (secs || 0);
+            const usedMinutes = initialMinutes - (remainingSeconds / 60);
+            if (usedMinutes > 0) {
+                timeUsed = Math.round(usedMinutes);
+            }
+        }
+    } catch (e) {
+        // Ignore timer errors
+    }
+    
+    // Record this attempt
+    const attempt = {
+        date: new Date().toISOString(),
+        score: resultsData.score,
+        correctCount: resultsData.correctCount,
+        totalQuestions: resultsData.totalQuestions,
+        percentage: Math.round((resultsData.correctCount / resultsData.totalQuestions) * 100),
+        failedQuestions: failedQuestions,
+        timeUsed: timeUsed
+    };
+    
+    stats.attempts.push(attempt);
+    
+    // Update question statistics
+    resultsData.results.forEach(result => {
+        const qNum = result.questionNum;
+        if (!stats.questionStats[qNum]) {
+            stats.questionStats[qNum] = {
+                totalAttempts: 0,
+                correctAttempts: 0,
+                timesFailed: 0
+            };
+        }
+        
+        stats.questionStats[qNum].totalAttempts++;
+        if (result.correct) {
+            stats.questionStats[qNum].correctAttempts++;
+        } else {
+            stats.questionStats[qNum].timesFailed++;
+        }
+    });
+    
+    // Keep only last 50 attempts to avoid localStorage overflow
+    if (stats.attempts.length > 50) {
+        stats.attempts = stats.attempts.slice(-50);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('unityTestStatistics', JSON.stringify(stats));
+    
+    return stats;
+}
+
+// Get statistics from localStorage
+function getStatistics() {
+    const saved = localStorage.getItem('unityTestStatistics');
+    if (saved) {
+        try {
+            return JSON.parse(saved);
+        } catch (e) {
+            console.error('Error parsing statistics:', e);
+        }
+    }
+    
+    // Return default structure
+    return {
+        attempts: [],
+        questionStats: {}
+    };
+}
+
+// Get failed questions (questions with highest failure rate)
+function getFailedQuestions(threshold = 0.5) {
+    const stats = getStatistics();
+    const failedQuestions = [];
+    
+    Object.keys(stats.questionStats).forEach(qNum => {
+        const qStat = stats.questionStats[qNum];
+        if (qStat.totalAttempts >= 2) {
+            const failureRate = qStat.timesFailed / qStat.totalAttempts;
+            if (failureRate >= threshold) {
+                failedQuestions.push({
+                    questionNum: parseInt(qNum),
+                    failureRate: failureRate,
+                    timesFailed: qStat.timesFailed,
+                    totalAttempts: qStat.totalAttempts
+                });
+            }
+        }
+    });
+    
+    // Sort by failure rate (highest first)
+    return failedQuestions.sort((a, b) => b.failureRate - a.failureRate);
+}
+
+// Filter questions to show only failed ones
+function filterQuestionsForPracticeMode(questionsArray, mode = 'all') {
+    if (mode === 'all') {
+        return questionsArray;
+    } else if (mode === 'failed') {
+        const failedQuestions = getFailedQuestions(0.3); // 30% failure rate threshold
+        const failedQuestionNumbers = new Set(failedQuestions.map(q => q.questionNum));
+        
+        return questionsArray.filter((question, index) => {
+            const qNum = parseInt(question.getAttribute('data-question-num') || (index + 1));
+            return failedQuestionNumbers.has(qNum);
+        });
+    }
+    return questionsArray;
+}
+
+// Display statistics panel
+function displayStatisticsPanel() {
+    const stats = getStatistics();
+    const modal = document.getElementById('statisticsModal');
+    
+    if (!modal) {
+        // Create modal if it doesn't exist
+        const modalDiv = document.createElement('div');
+        modalDiv.id = 'statisticsModal';
+        modalDiv.className = 'modal';
+        modalDiv.innerHTML = `
+            <div class="modal-content" style="max-width: 800px;">
+                <h2>Estadísticas de Práctica</h2>
+                <div id="statisticsContent"></div>
+                <div class="modal-buttons" style="margin-top: 20px;">
+                    <button class="modal-btn modal-btn-secondary" onclick="closeStatistics()">Cerrar</button>
+                    <button class="modal-btn modal-btn-primary" onclick="clearStatistics()">Limpiar Estadísticas</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+    }
+    
+    const content = document.getElementById('statisticsContent');
+    
+    // Calculate summary
+    const totalAttempts = stats.attempts.length;
+    const avgScore = totalAttempts > 0 
+        ? Math.round(stats.attempts.reduce((sum, a) => sum + a.score, 0) / totalAttempts)
+        : 0;
+    const bestScore = totalAttempts > 0 
+        ? Math.max(...stats.attempts.map(a => a.score))
+        : 0;
+    const latestAttempt = stats.attempts[stats.attempts.length - 1];
+    
+    // Get failed questions
+    const failedQuestions = getFailedQuestions(0.3);
+    
+    let html = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="padding: 15px; background: #e3f2fd; border-radius: 5px;">
+                <h3 style="margin: 0 0 10px 0; color: #1976d2;">Total Intentos</h3>
+                <div style="font-size: 2em; font-weight: bold; color: #1976d2;">${totalAttempts}</div>
+            </div>
+            <div style="padding: 15px; background: #fff3cd; border-radius: 5px;">
+                <h3 style="margin: 0 0 10px 0; color: #f57c00;">Puntuación Promedio</h3>
+                <div style="font-size: 2em; font-weight: bold; color: #f57c00;">${avgScore}/1000</div>
+            </div>
+            <div style="padding: 15px; background: #d4edda; border-radius: 5px;">
+                <h3 style="margin: 0 0 10px 0; color: #155724;">Mejor Puntuación</h3>
+                <div style="font-size: 2em; font-weight: bold; color: #155724;">${bestScore}/1000</div>
+            </div>
+            ${latestAttempt ? `
+            <div style="padding: 15px; background: #f3e5f5; border-radius: 5px;">
+                <h3 style="margin: 0 0 10px 0; color: #7b1fa2;">Último Intento</h3>
+                <div style="font-size: 1.5em; font-weight: bold; color: #7b1fa2;">${latestAttempt.score}/1000</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${new Date(latestAttempt.date).toLocaleString('es-ES')}</div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    // Failed questions section
+    if (failedQuestions.length > 0) {
+        html += `
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #f44336; margin-bottom: 15px;">📚 Preguntas Más Problemáticas</h3>
+                <div style="background: #fff; border-radius: 5px; padding: 15px; max-height: 300px; overflow-y: auto;">
+        `;
+        
+        failedQuestions.slice(0, 10).forEach(q => {
+            const accuracy = Math.round(((q.totalAttempts - q.timesFailed) / q.totalAttempts) * 100);
+            html += `
+                <div style="padding: 10px; margin-bottom: 10px; background: #fff3cd; border-left: 4px solid #ff9800; border-radius: 3px;">
+                    <strong>Pregunta ${q.questionNum}</strong> - 
+                    Fallada ${q.timesFailed} de ${q.totalAttempts} veces 
+                    (${accuracy}% de acierto)
+                    <div style="margin-top: 5px; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+                        <div style="height: 100%; background: ${accuracy >= 70 ? '#4caf50' : accuracy >= 50 ? '#ff9800' : '#f44336'}; width: ${accuracy}%;"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    }
+    
+    // Recent attempts
+    if (stats.attempts.length > 0) {
+        html += `
+            <div>
+                <h3 style="margin-bottom: 15px;">📊 Historial de Intentos (últimos 10)</h3>
+                <div style="background: #fff; border-radius: 5px; padding: 15px; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
+                                <th style="padding: 10px; text-align: left;">Fecha</th>
+                                <th style="padding: 10px; text-align: center;">Puntuación</th>
+                                <th style="padding: 10px; text-align: center;">Correctas</th>
+                                <th style="padding: 10px; text-align: center;">Porcentaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        `;
+        
+        stats.attempts.slice(-10).reverse().forEach(attempt => {
+            const date = new Date(attempt.date);
+            const color = attempt.percentage >= 70 ? '#4caf50' : attempt.percentage >= 50 ? '#ff9800' : '#f44336';
+            html += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">${date.toLocaleString('es-ES')}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold; color: ${color};">${attempt.score}/1000</td>
+                    <td style="padding: 10px; text-align: center;">${attempt.correctCount}/${attempt.totalQuestions}</td>
+                    <td style="padding: 10px; text-align: center;">${attempt.percentage}%</td>
+                </tr>
+            `;
+        });
+        
+        html += `
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div style="text-align: center; padding: 40px; background: #f5f5f5; border-radius: 5px;">
+                <p style="font-size: 1.2em; color: #666;">Aún no has completado ningún intento del examen.</p>
+                <p style="color: #999;">Completa el examen para empezar a ver tus estadísticas.</p>
+            </div>
+        `;
+    }
+    
+    content.innerHTML = html;
+    
+    // Show modal
+    document.getElementById('statisticsModal').classList.remove('hidden');
+}
+
+// Close statistics modal
+function closeStatistics() {
+    const modal = document.getElementById('statisticsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Clear statistics
+function clearStatistics() {
+    if (confirm('¿Estás seguro de que quieres limpiar todas las estadísticas? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem('unityTestStatistics');
+        displayStatisticsPanel();
+        alert('Estadísticas limpiadas.');
+    }
+}
+
+// Practice mode for failed questions
+let practiceMode = 'all'; // 'all' or 'failed'
+let filteredQuestionIndices = []; // Store indices of filtered questions
+
+function setPracticeMode(mode) {
+    practiceMode = mode;
+    
+    // Get the form element
+    const form = document.getElementById('testForm');
+    if (!form) return;
+    
+    // Reinitialize allQuestions
+    allQuestions = Array.from(form.querySelectorAll('.question'));
+    
+    // Hide all questions
+    allQuestions.forEach(q => {
+        q.classList.remove('question-active');
+        q.style.display = 'none';
+    });
+    
+    // Filter and show only selected questions
+    const filteredQuestions = filterQuestionsForPracticeMode(allQuestions, mode);
+    
+    if (filteredQuestions.length === 0) {
+        alert('No hay preguntas para practicar en este modo. Completa el examen primero para generar estadísticas.');
+        practiceMode = 'all';
+        filteredQuestions.push(...allQuestions);
+    }
+    
+    // Store filtered question indices for navigation
+    filteredQuestionIndices = filteredQuestions.map(q => allQuestions.indexOf(q));
+    
+    // Reset to first question in filtered list
+    if (filteredQuestionIndices.length > 0) {
+        currentQuestionIndex = filteredQuestionIndices[0];
+    } else {
+        currentQuestionIndex = 0;
+    }
+    
+    // Show first question
+    if (allQuestions[currentQuestionIndex]) {
+        allQuestions[currentQuestionIndex].classList.add('question-active');
+        allQuestions[currentQuestionIndex].style.display = 'block';
+    }
+    
+    // Update navigation and progress
+    if (typeof updateNavigationButtons === 'function') {
+        updateNavigationButtons();
+    }
+    if (typeof updateProgress === 'function') {
+        updateProgress();
+    }
+    
+    // Show message
+    const message = mode === 'failed' 
+        ? `Modo de práctica activado: ${filteredQuestions.length} preguntas problemáticas`
+        : 'Modo normal: todas las preguntas';
+    
+    alert(message);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// END STATISTICS SYSTEM
+// ============================================
+
 // Correct answers
 const correctAnswers = {
     // Question 1: True/False for Unity naming conventions
@@ -541,7 +907,7 @@ let currentLanguage = 'en';
 
 // Navigation function
 window.navigateQuestion = function(direction, isSkip = false, forceNavigate = false) {
-    console.log('navigateQuestion called:', { direction, isSkip, forceNavigate, trainerModeActive, currentQuestionIndex });
+    console.log('navigateQuestion called:', { direction, isSkip, forceNavigate, trainerModeActive, currentQuestionIndex, practiceMode });
     
     // Make sure allQuestions is initialized
     if (!allQuestions || allQuestions.length === 0) {
@@ -552,6 +918,21 @@ window.navigateQuestion = function(direction, isSkip = false, forceNavigate = fa
         if (!allQuestions || allQuestions.length === 0) {
             return;
         }
+    }
+    
+    // If in practice mode with filtered questions, use filtered indices
+    let availableIndices = [];
+    if (practiceMode === 'failed' && filteredQuestionIndices.length > 0) {
+        availableIndices = filteredQuestionIndices;
+    } else {
+        availableIndices = allQuestions.map((_, idx) => idx);
+    }
+    
+    // Find current position in available indices
+    let currentPosition = availableIndices.indexOf(currentQuestionIndex);
+    if (currentPosition === -1 && availableIndices.length > 0) {
+        currentPosition = 0;
+        currentQuestionIndex = availableIndices[0];
     }
     
     // Hide feedback if visible (will be shown again if needed)
@@ -733,11 +1114,15 @@ window.navigateQuestion = function(direction, isSkip = false, forceNavigate = fa
         trainerFeedback.classList.add('hidden');
     }
     
-    const newIndex = currentQuestionIndex + direction;
+    // Calculate new position in available indices
+    let newPosition = currentPosition + direction;
     
-    if (newIndex < 0 || newIndex >= allQuestions.length) {
-        return;
+    if (newPosition < 0 || newPosition >= availableIndices.length) {
+        return; // Can't go before first or after last question
     }
+    
+    // Get the new index from available indices
+    let newIndex = availableIndices[newPosition];
     
     // Hide current question
     if (allQuestions[currentQuestionIndex]) {
@@ -791,17 +1176,22 @@ function checkSingleQuestion(questionIndex) {
         }
     }
     
+    // Get the actual question ID from the HTML element instead of calculating from index
+    // This fixes the issue where question 33 is missing and causes misalignment
+    const questionElement = allQuestions[questionIndex];
+    const actualQuestionId = questionElement ? questionElement.id : null;
+    const questionNumFromId = actualQuestionId ? parseInt(actualQuestionId.replace('q', '')) : questionIndex + 1;
+    
     // Temporarily call checkAnswers and find our specific question
     const allResults = checkAnswers();
-    const questionNum = questionIndex + 1;
-    const result = allResults.results.find(r => r.questionNum === questionNum);
+    const result = allResults.results.find(r => r.questionNum === questionNumFromId);
     
     if (!result) {
         // Fallback for questions not in results (shouldn't happen)
-        const questionKey = `q${questionNum}`;
+        const questionKey = actualQuestionId || `q${questionNumFromId}`;
         return {
-            questionNum: questionNum,
-            questionText: questionTexts[questionKey] || `Question ${questionNum}`,
+            questionNum: questionNumFromId,
+            questionText: questionTexts[questionKey] || `Question ${questionNumFromId}`,
             correct: false,
             answer: 'No answer detected',
             correctAnswer: 'Unable to determine'
@@ -813,9 +1203,13 @@ function checkSingleQuestion(questionIndex) {
 
 // Mark visual feedback on inputs
 function markQuestionVisualFeedback(questionIndex, result) {
-    const questionNum = questionIndex + 1;
     const question = allQuestions[questionIndex];
     if (!question) return;
+    
+    // Get the actual question ID from the HTML element instead of calculating from index
+    // This fixes the issue where question 33 is missing and causes misalignment
+    const actualQuestionId = question.id;
+    const questionKey = actualQuestionId || `q${questionIndex + 1}`;
     
     // Remove any existing visual feedback
     question.querySelectorAll('.answer-feedback').forEach(el => el.remove());
@@ -830,7 +1224,6 @@ function markQuestionVisualFeedback(questionIndex, result) {
     });
     
     // Check if this is a multi-part True/False question
-    const questionKey = `q${questionNum}`;
     const part1Key = `${questionKey}_1`;
     const part2Key = `${questionKey}_2`;
     
@@ -1002,7 +1395,11 @@ function showTrainerFeedback(questionIndex, result = null) {
     const trainerFeedback = document.getElementById('trainerFeedback');
     const trainerFeedbackContent = document.getElementById('trainerFeedbackContent');
     
-    const questionKey = `q${questionIndex + 1}`;
+    // Get the actual question ID from the HTML element instead of calculating from index
+    // This fixes the issue where question 33 is missing and causes misalignment
+    const questionElement = allQuestions[questionIndex];
+    const actualQuestionId = questionElement ? questionElement.id : null;
+    const questionKey = actualQuestionId || `q${questionIndex + 1}`;
     const explanation = questionExplanations[questionKey] || questionExplanations.default;
     
     const statusClass = result.correct ? 'correct' : 'incorrect';
@@ -1012,8 +1409,8 @@ function showTrainerFeedback(questionIndex, result = null) {
         (currentLanguage === 'en' ? 'Not quite right. Here\'s what went wrong:' : 'No es correcto. Esto es lo que falló:');
     
     // Check if this question has visual feedback (multi-part True/False)
-    const questionNum = questionIndex + 1;
-    const hasVisualFeedback = correctAnswers[`q${questionNum}_1`] && correctAnswers[`q${questionNum}_2`];
+    // Use the actual question key we already calculated above
+    const hasVisualFeedback = correctAnswers[`${questionKey}_1`] && correctAnswers[`${questionKey}_2`];
     
     // For questions with visual feedback, don't show any textual feedback
     // The visual feedback (green/red colors and ✓/✗) is sufficient
@@ -1395,6 +1792,46 @@ document.addEventListener('DOMContentLoaded', function() {
         randomizeQuestions();
     });
     
+    // Statistics button
+    const statisticsBtn = document.getElementById('statisticsBtn');
+    if (statisticsBtn) {
+        statisticsBtn.addEventListener('click', function() {
+            displayStatisticsPanel();
+        });
+    }
+    
+    // Practice mode button
+    const practiceModeBtn = document.getElementById('practiceModeBtn');
+    if (practiceModeBtn) {
+        practiceModeBtn.addEventListener('click', function() {
+            const stats = getStatistics();
+            const failedQuestions = getFailedQuestions(0.3);
+            
+            if (failedQuestions.length === 0) {
+                alert('Aún no hay estadísticas suficientes. Completa el examen al menos una vez para activar el modo de práctica.');
+                return;
+            }
+            
+            // Show menu for practice mode
+            const mode = confirm(`¿Practicar solo preguntas problemáticas?\n\nHaz clic en "Aceptar" para practicar ${failedQuestions.length} preguntas que has fallado.\nHaz clic en "Cancelar" para volver al modo normal.`) 
+                ? 'failed' 
+                : 'all';
+            
+            setPracticeMode(mode);
+            
+            // Reset form for new practice session
+            if (mode === 'failed') {
+                form.reset();
+                randomizeQuestions();
+            }
+        });
+    }
+    
+    // Make functions globally accessible for onclick handlers
+    window.displayStatisticsPanel = displayStatisticsPanel;
+    window.closeStatistics = closeStatistics;
+    window.clearStatistics = clearStatistics;
+    
     // Restart Test button
     const restartTestBtn = document.getElementById('restartTestBtn');
     if (restartTestBtn) {
@@ -1602,6 +2039,10 @@ document.addEventListener('DOMContentLoaded', function() {
         clearProgress();
         
         const results = checkAnswers();
+        
+        // Save statistics
+        saveAttemptStatistics(results);
+        
         displayResults(results);
         
         // Hide form, show results
@@ -2585,6 +3026,14 @@ document.addEventListener('DOMContentLoaded', function() {
         html += `<h3>Test Results</h3>`;
         html += `<div class="score">Score: <span class="score-number">${score}/1000</span> (${correctCount}/${totalQuestions} questions correct)</div>`;
         html += `<div style="margin-top: 10px; color: var(--text-secondary);">Points: ${totalPoints}/${maxPoints}</div>`;
+        html += `<div style="margin-top: 15px;">
+            <button onclick="displayStatisticsPanel()" class="submit-btn" style="background: #9c27b0; margin-right: 10px;">
+                📊 Ver Estadísticas
+            </button>
+            <button onclick="window.location.reload()" class="submit-btn" style="background: #2196F3;">
+                🔄 Hacer Otro Intento
+            </button>
+        </div>`;
         html += '</div>';
 
         html += '<h3 style="margin-top: 30px; margin-bottom: 15px;">Question Results:</h3>';
