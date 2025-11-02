@@ -406,6 +406,126 @@ const questionExplanations = {
         en: "UI Button onClick: In the code shown, only button1 has AddListener called in Start(). While AddListener CAN technically be called in Update(), this is possible (though not recommended as it would add listeners every frame). The statement about button2 is technically TRUE because AddListener can be called in Update - the code capability exists even if not shown. OnTriggerEnter2D is for collider physics, not UI buttons - buttons use onClick events.",
         es: "UI Button onClick: En el código mostrado, solo button1 tiene AddListener llamado en Start(). Aunque AddListener técnicamente PUEDE ser llamado en Update(), esto es posible (aunque no recomendado ya que agregaría listeners cada frame). La afirmación sobre button2 es técnicamente TRUE porque AddListener puede ser llamado en Update - la capacidad del código existe incluso si no se muestra. OnTriggerEnter2D es para física de colliders, no para botones UI - los botones usan eventos onClick."
     },
+    q9: {
+        en: "Code snippet ordering: In Unity, component initialization follows a specific lifecycle. Awake() is called when the script instance is loaded, before Start(). OnEnable() is called every time the GameObject becomes active. For pooled objects, initialization should happen once in Awake() or Start(), while activation behavior happens in OnEnable(). The proper order is: class definition, Awake (initialization), OnEnable (activation), closing brace.",
+        es: "Orden de fragmentos de código: En Unity, la inicialización de componentes sigue un ciclo de vida específico. Awake() se llama cuando se carga la instancia del script, antes de Start(). OnEnable() se llama cada vez que el GameObject se vuelve activo. Para objetos en pool, la inicialización debe ocurrir una vez en Awake() o Start(), mientras que el comportamiento de activación ocurre en OnEnable(). El orden correcto es: definición de clase, Awake (inicialización), OnEnable (activación), llave de cierre."
+    },
+    q10: {
+        en: "Debug.Log Color: When concatenating a Color variable with a string in Debug.Log(), Unity automatically calls ToString() on the Color. Simply using 'color' (without .ToString()) will automatically convert it to the string representation showing RGBA values like '(0.258,0.525,0.956,1)'. Adding .ToString() explicitly also works, but it's redundant.",
+        es: "Debug.Log Color: Al concatenar una variable Color con una cadena en Debug.Log(), Unity automáticamente llama a ToString() en el Color. Simplemente usar 'color' (sin .ToString()) automáticamente lo convertirá a la representación de cadena mostrando valores RGBA como '(0.258,0.525,0.956,1)'. Agregar .ToString() explícitamente también funciona, pero es redundante."
+    },
+    q11: {
+        en: "Unity window matching: The Hierarchy window shows all GameObjects in the current Scene. The Scene view is the interactive 3D viewport where you can manipulate objects. The Project window contains all assets (scripts, prefabs, materials, etc.) in your project. The Inspector window displays details and properties of the selected GameObject, allowing you to modify components and their values.",
+        es: "Coincidencia de ventanas de Unity: La ventana Hierarchy muestra todos los GameObjects en la Escena actual. La vista Scene es la ventana gráfica 3D interactiva donde puedes manipular objetos. La ventana Project contiene todos los assets (scripts, prefabs, materiales, etc.) de tu proyecto. La ventana Inspector muestra detalles y propiedades del GameObject seleccionado, permitiéndote modificar componentes y sus valores."
+    },
+    q12: {
+        en: "Animator SetBool: To set an Animator boolean parameter, you need a reference to the Animator component and call SetBool() with two parameters: the parameter name as a string (e.g., 'Attacking') and the boolean value (true or false). The syntax is: animator.SetBool('Attacking', false);",
+        es: "Animator SetBool: Para establecer un parámetro booleano del Animator, necesitas una referencia al componente Animator y llamar SetBool() con dos parámetros: el nombre del parámetro como cadena (ej., 'Attacking') y el valor booleano (true o false). La sintaxis es: animator.SetBool('Attacking', false);"
+    },
+    q13: {
+        en: "ECS (Entity Component System): ECS is Unity's data-oriented programming approach. Code using ECS will have 'using Unity.Entities;' and typically uses IComponentData for components and ComponentSystem or SystemBase for systems. Regular MonoBehaviour classes are NOT ECS - they are the traditional object-oriented approach. Only the first snippet uses Unity.Entities, making it ECS. The others are standard MonoBehaviour scripts.",
+        es: "ECS (Entity Component System): ECS es el enfoque de programación orientado a datos de Unity. El código que usa ECS tendrá 'using Unity.Entities;' y típicamente usa IComponentData para componentes y ComponentSystem o SystemBase para sistemas. Las clases MonoBehaviour regulares NO son ECS - son el enfoque orientado a objetos tradicional. Solo el primer fragmento usa Unity.Entities, haciéndolo ECS. Los otros son scripts MonoBehaviour estándar."
+    },
+    q14: {
+        en: "Material.SetColor: According to the API documentation, SetColor() requires two parameters: a string for the property name (e.g., '_Color') and a Color value. The first parameter must be the property name as a string, and the second parameter must be a Color value like 'Color.red', not a string.",
+        es: "Material.SetColor: Según la documentación de la API, SetColor requiere dos parámetros: una cadena para el nombre de la propiedad (ej., '_Color') y un valor Color. El primer parámetro debe ser el nombre de la propiedad como cadena, y el segundo parámetro debe ser un valor Color como 'Color.red', no una cadena."
+    },
+    q15: {
+        en: "Input methods: GetKey() returns true while the key is held down (continuous). GetKeyDown() returns true only on the frame when the key is first pressed (once). GetKeyUp() returns true only on the frame when the key is released. For 'held down', use GetKey. For 'pressed once', use GetKeyDown. For 'released', use GetKeyUp.",
+        es: "Métodos de Input: GetKey() devuelve true mientras la tecla está presionada (continuo). GetKeyDown() devuelve true solo en el frame cuando la tecla se presiona por primera vez (una vez). GetKeyUp() devuelve true solo en el frame cuando se suelta la tecla. Para 'mantener presionado', usa GetKey. Para 'presionado una vez', usa GetKeyDown. Para 'soltado', usa GetKeyUp."
+    },
+    q16: {
+        en: "Code comments: The code creates a Rigidbody variable 'clone' and sets its velocity. The comment 'Give the cloned object an initial velocity along the current object's Z axis' is accurate because TransformDirection(Vector3.forward) transforms the forward direction to world space. 'Instantiate the projectile at the position and rotation of this transform' is also accurate, though the instantiation would happen before the velocity assignment. The other comments are incorrect.",
+        es: "Comentarios de código: El código crea una variable Rigidbody 'clone' y establece su velocidad. El comentario 'Dar al objeto clonado una velocidad inicial a lo largo del eje Z del objeto actual' es preciso porque TransformDirection(Vector3.forward) transforma la dirección hacia adelante al espacio mundial. 'Instanciar el proyectil en la posición y rotación de este transform' también es preciso, aunque la instanciación ocurriría antes de la asignación de velocidad. Los otros comentarios son incorrectos."
+    },
+    q17: {
+        en: "Transform.Translate: The Translate() method moves the GameObject by the given translation. This is the correct method for moving an object based on input and speed. SetPositionAndRotation sets both position and rotation. TransformDirection and TransformVector transform vectors but don't move the object.",
+        es: "Transform.Translate: El método Translate() mueve el GameObject según la traducción dada. Este es el método correcto para mover un objeto basado en input y velocidad. SetPositionAndRotation establece tanto posición como rotación. TransformDirection y TransformVector transforman vectores pero no mueven el objeto."
+    },
+    q18: {
+        en: "Animator functions: SetInt() is for integer parameters like 1. SetFloat() is for float parameters like 0.5f. SetBool() is for boolean parameters like false. SetTrigger() is for trigger parameters (no value, just the name). Match each function call to the correct parameter type based on the value type being passed.",
+        es: "Funciones del Animator: SetInt() es para parámetros enteros como 1. SetFloat() es para parámetros float como 0.5f. SetBool() es para parámetros booleanos como false. SetTrigger() es para parámetros trigger (sin valor, solo el nombre). Empareja cada llamada de función con el tipo de parámetro correcto basado en el tipo de valor que se pasa."
+    },
+    q19: {
+        en: "Start vs OnTriggerEnter: Start() is called once when the script starts, perfect for one-time initialization like finding components. OnTriggerEnter() is called when a collider enters the trigger, used for collision detection and response. In this case, initialization (finding PowerUp_Manager) should happen once in Start(), while collision handling should happen in OnTriggerEnter().",
+        es: "Start vs OnTriggerEnter: Start() se llama una vez cuando el script inicia, perfecto para inicialización única como encontrar componentes. OnTriggerEnter() se llama cuando un collider entra en el trigger, usado para detección y respuesta de colisiones. En este caso, la inicialización (encontrar PowerUp_Manager) debe ocurrir una vez en Start(), mientras que el manejo de colisiones debe ocurrir en OnTriggerEnter()."
+    },
+    q20: {
+        en: "Method declaration: A method declaration requires: access modifier (private/public), return type (void for no return), method name (SetMessageToDisplay), and parameters (string stringToDisplay). Based on the class context showing textToDisplay.text usage, the method should accept a string parameter to set the text.",
+        es: "Declaración de método: Una declaración de método requiere: modificador de acceso (private/public), tipo de retorno (void para sin retorno), nombre del método (SetMessageToDisplay), y parámetros (string stringToDisplay). Basado en el contexto de la clase que muestra uso de textToDisplay.text, el método debe aceptar un parámetro string para establecer el texto."
+    },
+    q21: {
+        en: "Operators matching: != means 'not equal to'. ++ is the increment operator (adds 1). == checks equality. + can concatenate strings or add numbers. = is assignment. Match each operator to its correct meaning and usage in the given code context.",
+        es: "Coincidencia de operadores: != significa 'no igual a'. ++ es el operador de incremento (suma 1). == verifica igualdad. + puede concatenar cadenas o sumar números. = es asignación. Empareja cada operador con su significado y uso correcto en el contexto del código dado."
+    },
+    q22: {
+        en: "Mecanim Animator State: In Unity's Animator State Machine, if a condition (like Axis > 2) is checked and no transition condition is met, the animator stays in the current state. If the current state is 'Empty', it will remain in 'Empty' state until a valid transition condition is met.",
+        es: "Estado del Animator Mecanim: En la máquina de estados del Animator de Unity, si se verifica una condición (como Axis > 2) y no se cumple ninguna condición de transición, el animator permanece en el estado actual. Si el estado actual es 'Empty', permanecerá en el estado 'Empty' hasta que se cumpla una condición de transición válida."
+    },
+    q23: {
+        en: "State Machine Transitions: Entry node transitions determine the initial state when entering the state machine. Animation states CAN have multiple transitions to different states (this is FALSE - states can have multiple transitions). State machines may or may not have a default state - both configurations are valid.",
+        es: "Transiciones de máquina de estados: Las transiciones del nodo Entry determinan el estado inicial al entrar a la máquina de estados. Los estados de animación PUEDEN tener múltiples transiciones a diferentes estados (esto es FALSE - los estados pueden tener múltiples transiciones). Las máquinas de estados pueden o no tener un estado por defecto - ambas configuraciones son válidas."
+    },
+    q24: {
+        en: "OnMouseDown method: OnMouseDown() is a Unity event method that detects mouse clicks on GameObjects. The method should be private (access modifier), void (no return type needed), and named OnMouseDown() with empty parentheses. It's called automatically by Unity when the mouse button is pressed down on a GameObject with a collider.",
+        es: "Método OnMouseDown: OnMouseDown() es un método de evento de Unity que detecta clics del mouse en GameObjects. El método debe ser private (modificador de acceso), void (no necesita tipo de retorno), y nombrado OnMouseDown() con paréntesis vacíos. Es llamado automáticamente por Unity cuando se presiona el botón del mouse en un GameObject con collider."
+    },
+    q25: {
+        en: "Compilation errors: Type mismatches cause compile-time errors in C#. Comparing a dictionary to an int (dictionary == myInt) is invalid - they are different types. Comparing a float to a string with <= (myFloat <= myString) is also invalid - these types cannot be compared. The other comparisons (int to int, float to float) are valid.",
+        es: "Errores de compilación: Las incompatibilidades de tipo causan errores en tiempo de compilación en C#. Comparar un diccionario con un int (dictionary == myInt) es inválido - son tipos diferentes. Comparar un float con un string usando <= (myFloat <= myString) también es inválido - estos tipos no pueden compararse. Las otras comparaciones (int a int, float a float) son válidas."
+    },
+    q26: {
+        en: "ECS True/False: ECS uses Unity.Entities namespace. Fireball is a standard MonoBehaviour script - NOT ECS. ShieldComponent uses Unity.Entities namespace (IComponentData), making it ECS even if it inherits from MonoBehaviour. EnemyMovementSystem uses ComponentSystem from Unity.Entities, making it ECS. Only snippets with Unity.Entities are ECS.",
+        es: "ECS True/False: ECS usa el namespace Unity.Entities. Fireball es un script MonoBehaviour estándar - NO es ECS. ShieldComponent usa el namespace Unity.Entities (IComponentData), haciéndolo ECS incluso si hereda de MonoBehaviour. EnemyMovementSystem usa ComponentSystem de Unity.Entities, haciéndolo ECS. Solo los fragmentos con Unity.Entities son ECS."
+    },
+    q27: {
+        en: "Unity naming conventions: Unity follows C# conventions: classes use PascalCase, fields use camelCase, methods use PascalCase. Unity-specific method names like OnTriggerEnter, CompareTag must use correct capitalization. The first snippet follows conventions correctly. The second has errors: ontriggerenter should be OnTriggerEnter, Other should be other (camelCase for fields), compareTag should be CompareTag (PascalCase for methods).",
+        es: "Convenciones de nombres de Unity: Unity sigue las convenciones de C#: las clases usan PascalCase, los campos usan camelCase, los métodos usan PascalCase. Los nombres de métodos específicos de Unity como OnTriggerEnter, CompareTag deben usar la capitalización correcta. El primer fragmento sigue las convenciones correctamente. El segundo tiene errores: ontriggerenter debe ser OnTriggerEnter, Other debe ser other (camelCase para campos), compareTag debe ser CompareTag (PascalCase para métodos)."
+    },
+    q28: {
+        en: "Rigidbody data type: GetComponent<Rigidbody>() returns a Rigidbody type. This is the component type, not GameObject or Transform. The generic GetComponent<T>() method returns the type specified in the angle brackets, which in this case is Rigidbody.",
+        es: "Tipo de dato Rigidbody: GetComponent<Rigidbody>() devuelve un tipo Rigidbody. Este es el tipo de componente, no GameObject o Transform. El método genérico GetComponent<T>() devuelve el tipo especificado en los corchetes angulares, que en este caso es Rigidbody."
+    },
+    q29: {
+        en: "GameObject null check: To check if a GameObject is null, you first declare it (e.g., 'public GameObject projectile;'), then use the comparison 'if (projectile == null)'. The null check prevents NullReferenceException when trying to use the GameObject. Note: The declaration should match the exact capitalization shown in the question.",
+        es: "Verificación de null de GameObject: Para verificar si un GameObject es null, primero lo declaras (ej., 'public GameObject projectile;'), luego usas la comparación 'if (projectile == null)'. La verificación de null previene NullReferenceException al intentar usar el GameObject. Nota: La declaración debe coincidir con la capitalización exacta mostrada en la pregunta."
+    },
+    q30: {
+        en: "Rigidbody.AddForce: AddForce() requires a Vector3 direction. transform.forward gives the forward direction of the object as a Vector3. The speed/force magnitude should be multiplied (speedForce). The correct syntax is: rb.AddForce(transform.forward * speedForce); This applies force in the direction the object is facing, scaled by the speed variable.",
+        es: "Rigidbody.AddForce: AddForce() requiere una dirección Vector3. transform.forward da la dirección hacia adelante del objeto como Vector3. La magnitud de velocidad/fuerza debe multiplicarse (speedForce). La sintaxis correcta es: rb.AddForce(transform.forward * speedForce); Esto aplica fuerza en la dirección que mira el objeto, escalada por la variable de velocidad."
+    },
+    q31: {
+        en: "Inspector window: The 'Static' checkbox in the Inspector is used for static batching and optimization, not for preventing movement - GameObjects can still be moved programmatically. GameObject.FindGameObjectsWithTag() can find multiple objects (note the plural 'GameObjects'), while FindGameObjectWithTag() finds only one. The Inspector can modify prefab instances and the modifications can affect the prefab asset.",
+        es: "Ventana Inspector: La casilla 'Static' en el Inspector se usa para static batching y optimización, no para prevenir movimiento - los GameObjects aún pueden moverse programáticamente. GameObject.FindGameObjectsWithTag() puede encontrar múltiples objetos (nota el plural 'GameObjects'), mientras que FindGameObjectWithTag() encuentra solo uno. El Inspector puede modificar instancias de prefab y las modificaciones pueden afectar el asset del prefab."
+    },
+    q32: {
+        en: "Rigidbody.velocity error: Rigidbody.velocity cannot be accessed as a static property. You need an instance reference (e.g., 'rb' which is a Rigidbody variable). The correct syntax is 'rb.velocity = transform.forward * speed;' where 'rb' is the Rigidbody component reference. Without an instance, you cannot modify velocity.",
+        es: "Error de Rigidbody.velocity: Rigidbody.velocity no puede accederse como una propiedad estática. Necesitas una referencia de instancia (ej., 'rb' que es una variable Rigidbody). La sintaxis correcta es 'rb.velocity = transform.forward * speed;' donde 'rb' es la referencia al componente Rigidbody. Sin una instancia, no puedes modificar la velocidad."
+    },
+    q34: {
+        en: "Compile-time error: OnCollisionEnter() is placed outside the class definition (after the closing brace). This causes a syntax error because methods must be inside the class. The error occurs at line 9 where OnCollisionEnter is declared outside the Player class scope. All methods must be within the class braces.",
+        es: "Error en tiempo de compilación: OnCollisionEnter() está colocado fuera de la definición de la clase (después de la llave de cierre). Esto causa un error de sintaxis porque los métodos deben estar dentro de la clase. El error ocurre en la línea 9 donde OnCollisionEnter se declara fuera del alcance de la clase Player. Todos los métodos deben estar dentro de las llaves de la clase."
+    },
+    q35: {
+        en: "Dictionary initialization: A Dictionary requires proper initialization syntax. You need a closing brace to close the dictionary initialization block. dictionary.Add() is the method to add key-value pairs to a Dictionary. A foreach loop can iterate through Dictionary entries. These are the three essential parts for properly initializing and using a Dictionary in C#.",
+        es: "Inicialización de Dictionary: Un Dictionary requiere sintaxis de inicialización adecuada. Necesitas una llave de cierre para cerrar el bloque de inicialización del diccionario. dictionary.Add() es el método para agregar pares clave-valor a un Dictionary. Un bucle foreach puede iterar a través de las entradas del Dictionary. Estas son las tres partes esenciales para inicializar y usar correctamente un Dictionary en C#."
+    },
+    q37: {
+        en: "Scene view positioning: The Move tool in Unity can display both local and global orientation through the tool handle's pivot mode. The Transform tool (position/rotation/scale combined) combines move, rotate, and scale functionality. GameObjects CAN be moved, rotated, and scaled in 2D view as well - 2D view is just a different camera perspective, not a restriction on transformations.",
+        es: "Posicionamiento en Scene view: La herramienta Move en Unity puede mostrar orientación local y global a través del modo pivot del handle de la herramienta. La herramienta Transform (posición/rotación/escala combinadas) combina funcionalidad de mover, rotar y escalar. Los GameObjects PUEDEN moverse, rotarse y escalarse en la vista 2D también - la vista 2D es solo una perspectiva de cámara diferente, no una restricción en las transformaciones."
+    },
+    q38: {
+        en: "playerName inspector: For a variable to appear in the Unity Inspector, it must be public (or marked with [SerializeField] attribute). Private variables are not visible in the Inspector by default. Making it public allows Unity's Inspector to display and allow editing of the variable value in the editor.",
+        es: "playerName inspector: Para que una variable aparezca en el Inspector de Unity, debe ser pública (o marcada con el atributo [SerializeField]). Las variables privadas no son visibles en el Inspector por defecto. Hacerla pública permite que el Inspector de Unity muestre y permita editar el valor de la variable en el editor."
+    },
+    q39: {
+        en: "GetChildren return type: GetChildren() methods in Unity typically return a List<Transform> because they collect multiple child Transforms. It's not a single Transform, GameObject, or array - it's a List collection containing all child Transform components.",
+        es: "Tipo de retorno de GetChildren: Los métodos GetChildren() en Unity típicamente devuelven List<Transform> porque recolectan múltiples Transforms hijos. No es un Transform único, GameObject, o array - es una colección List que contiene todos los componentes Transform hijos."
+    },
+    q40: {
+        en: "Functions True/False: void means a function returns nothing, not null - void is the absence of a return type. Functions CAN have multiple parameters of different types - this is a core feature of C#. Functions must be CALLED to execute - just defining them doesn't run the code. Functions that return values MUST use the return keyword to provide the return value.",
+        es: "Funciones True/False: void significa que una función no devuelve nada, no null - void es la ausencia de un tipo de retorno. Las funciones PUEDEN tener múltiples parámetros de diferentes tipos - esta es una característica fundamental de C#. Las funciones deben ser LLAMADAS para ejecutarse - solo definirlas no ejecuta el código. Las funciones que devuelven valores DEBEN usar la palabra clave return para proporcionar el valor de retorno."
+    },
     // Generic explanation for questions without specific explanations
     default: {
         en: "Review your answer and the correct solution carefully. Make sure you understand the concepts involved.",
