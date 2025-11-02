@@ -30,11 +30,11 @@ const correctAnswers = {
     // Question 8: UI buttons True/False
     q8_1: 'false',   // onClick in Start doesn't guarantee green color (need to see LightBulbOn method)
     q8_2: 'false',   // OnTriggerEnter2D is not needed for button presses
-    q8_3: 'true',    // onClick AddListener can be called in Update (though not recommended)
+    q8_3: 'true',    // TRUE: AddListener CAN be called in Update (technical capability), and button2 could be set up to turn green
     
-    // Question 9: Code snippet ordering (3,2,1,4 = C, B, A, D)
-    q9_1: 'C',       // Position 1: Awake (C)
-    q9_2: 'B',       // Position 2: Class definition (B)
+    // Question 9: Code snippet ordering (B, C, A, D)
+    q9_1: 'B',       // Position 1: Class definition (B)
+    q9_2: 'C',       // Position 2: Awake (C)
     q9_3: 'A',       // Position 3: OnEnable (A)
     q9_4: 'D',       // Position 4: Closing brace (D)
     
@@ -51,10 +51,10 @@ const correctAnswers = {
     q12_1: 'animator', // animator reference
     q12_2: '("Attacking", false)', // SetBool parameter
     
-    // Question 13: ECS True/False (T T F)
-    q13_1: 'true',   // Uses Unity.Entities - TRUE
-    q13_2: 'true',   // ShieldComponent uses Unity.Entities - TRUE
-    q13_3: 'false',  // Regular MonoBehaviour, no ECS - FALSE
+    // Question 13: ECS True/False (T F F)
+    q13_1: 'true',   // Uses Unity.Entities - TRUE (horizontal/Vertical)
+    q13_2: 'false',  // Wizard class with fireballs - NO Unity.Entities, regular MonoBehaviour - FALSE
+    q13_3: 'false',  // Movement class with speed - NO Unity.Entities, regular MonoBehaviour - FALSE
     
     // Question 14: Material.SetColor
     q14_1: '"_Color"', // First parameter: name
@@ -216,12 +216,13 @@ function shuffleArray(array) {
 
 // Randomize options in questions
 function randomizeQuestions() {
-    // Randomize True/False radio groups
-    document.querySelectorAll('.radio-group').forEach(group => {
-        const labels = Array.from(group.querySelectorAll('.radio-label'));
-        const shuffled = shuffleArray(labels);
-        group.innerHTML = '';
-        shuffled.forEach(label => group.appendChild(label));
+    // Randomize code snippet rows (entire rows with code + radio buttons)
+    // This shuffles the order of snippets for True/False questions
+    document.querySelectorAll('.true-false-content').forEach(container => {
+        const rows = Array.from(container.querySelectorAll('.code-snippet-row'));
+        const shuffled = shuffleArray(rows);
+        container.innerHTML = '';
+        shuffled.forEach(row => container.appendChild(row));
     });
 
     // Randomize multiple choice options
@@ -309,14 +310,18 @@ function updateProgress() {
         unansweredWarning.classList.add('hidden');
     }
     
-    // Save progress to localStorage
-    saveProgress();
+    // Save progress to localStorage (but only if we have a valid currentQuestionIndex set)
+    // This prevents overwriting saved progress during initial load
+    if (typeof currentQuestionIndex !== 'undefined' && currentQuestionIndex >= 0) {
+        saveProgress();
+    }
 }
 
 // Save progress to localStorage
 function saveProgress() {
     const form = document.getElementById('testForm');
-    const formData = new FormData(form);
+    if (!form) return; // Don't save if form doesn't exist yet
+    
     const answers = {};
     
     // Save all form inputs
@@ -331,10 +336,14 @@ function saveProgress() {
         }
     });
     
+    // Always save if we have a currentQuestionIndex set (even if no answers yet)
+    // This allows saving progress even when just navigating without answering
     localStorage.setItem('unityTestProgress', JSON.stringify({
         answers: answers,
+        currentQuestionIndex: currentQuestionIndex,
         timestamp: Date.now()
     }));
+    console.log('Progress saved:', { answersCount: Object.keys(answers).length, currentIndex: currentQuestionIndex });
 }
 
 // Load progress from localStorage
@@ -349,7 +358,10 @@ function loadProgress() {
             localStorage.removeItem('unityTestProgress');
             return null;
         }
-        return data.answers;
+        return {
+            answers: data.answers,
+            currentQuestionIndex: data.currentQuestionIndex !== undefined ? data.currentQuestionIndex : 0
+        };
     } catch (e) {
         return null;
     }
@@ -360,12 +372,603 @@ function clearProgress() {
     localStorage.removeItem('unityTestProgress');
 }
 
+// Question explanations (English and Spanish)
+const questionExplanations = {
+    q1: {
+        en: "Unity naming conventions: Classes use PascalCase (PlayerScript), fields use camelCase (playerLight), methods use PascalCase (PlayerFunction). C# keywords are lowercase.",
+        es: "Convenciones de nombres de Unity: Las clases usan PascalCase (PlayerScript), los campos usan camelCase (playerLight), los métodos usan PascalCase (PlayerFunction). Las palabras clave de C# están en minúsculas."
+    },
+    q2: {
+        en: "Debug.Log() is the correct method to log messages to the Unity console. Console.Log is not a Unity method.",
+        es: "Debug.Log() es el método correcto para registrar mensajes en la consola de Unity. Console.Log no es un método de Unity."
+    },
+    q3: {
+        en: "When the question says 'if coins is equivalent to extralife, or bonus, or both', it means: if coins equals extralife OR if coins equals bonus OR if coins equals both. This requires the || (OR) operator. The == operator checks for equality. Note: 'or both' means we want to execute if EITHER condition is true (OR), not only when BOTH are true (AND).",
+        es: "Cuando la pregunta dice 'si coins es equivalente a extralife, o bonus, o ambos', significa: si coins es igual a extralife O si coins es igual a bonus O si coins es igual a ambos. Esto requiere el operador || (OR). El operador == verifica la igualdad. Nota: 'o ambos' significa que queremos ejecutar si CUALQUIERA de las condiciones es verdadera (OR), no solo cuando AMBAS son verdaderas (AND)."
+    },
+    q4: {
+        en: "The modulo operator (%) returns the remainder of a division. If i % 2 == 0, it means the number is divisible by 2 with no remainder (even number).",
+        es: "El operador módulo (%) devuelve el resto de una división. Si i % 2 == 0, significa que el número es divisible por 2 sin resto (número par)."
+    },
+    q5: {
+        en: "To use UI Text in Unity, you need 'using UnityEngine.UI;', declare a public Text variable, and set the text property with myText.text = value.",
+        es: "Para usar UI Text en Unity, necesitas 'using UnityEngine.UI;', declarar una variable pública Text, y establecer la propiedad text con myText.text = valor."
+    },
+    q6: {
+        en: "Random.Range(1, 32) generates a random integer between 1 (inclusive) and 32 (exclusive), so the range is 1 to 31.",
+        es: "Random.Range(1, 32) genera un entero aleatorio entre 1 (inclusive) y 32 (exclusivo), por lo que el rango es de 1 a 31."
+    },
+    q7: {
+        en: "NullReferenceException occurs when trying to access a member of a null object. In this case, coolBook is null, so accessing coolBook.author would throw an exception.",
+        es: "NullReferenceException ocurre cuando intentas acceder a un miembro de un objeto nulo. En este caso, coolBook es nulo, por lo que acceder a coolBook.author lanzaría una excepción."
+    },
+    q8: {
+        en: "UI Button onClick: In the code shown, only button1 has AddListener called in Start(). While AddListener CAN technically be called in Update(), this is possible (though not recommended as it would add listeners every frame). The statement about button2 is technically TRUE because AddListener can be called in Update - the code capability exists even if not shown. OnTriggerEnter2D is for collider physics, not UI buttons - buttons use onClick events.",
+        es: "UI Button onClick: En el código mostrado, solo button1 tiene AddListener llamado en Start(). Aunque AddListener técnicamente PUEDE ser llamado en Update(), esto es posible (aunque no recomendado ya que agregaría listeners cada frame). La afirmación sobre button2 es técnicamente TRUE porque AddListener puede ser llamado en Update - la capacidad del código existe incluso si no se muestra. OnTriggerEnter2D es para física de colliders, no para botones UI - los botones usan eventos onClick."
+    },
+    // Generic explanation for questions without specific explanations
+    default: {
+        en: "Review your answer and the correct solution carefully. Make sure you understand the concepts involved.",
+        es: "Revisa tu respuesta y la solución correcta cuidadosamente. Asegúrate de entender los conceptos involucrados."
+    }
+};
+
+// Global variables for navigation
+let currentQuestionIndex = 0;
+let allQuestions = [];
+let trainerModeActive = false;
+let currentLanguage = 'en';
+
+// Navigation function
+window.navigateQuestion = function(direction, isSkip = false, forceNavigate = false) {
+    console.log('navigateQuestion called:', { direction, isSkip, forceNavigate, trainerModeActive, currentQuestionIndex });
+    
+    // Make sure allQuestions is initialized
+    if (!allQuestions || allQuestions.length === 0) {
+        const form = document.getElementById('testForm');
+        if (form) {
+            allQuestions = Array.from(form.querySelectorAll('.question'));
+        }
+        if (!allQuestions || allQuestions.length === 0) {
+            return;
+        }
+    }
+    
+    // Hide feedback if visible (will be shown again if needed)
+    const trainerFeedback = document.getElementById('trainerFeedback');
+    
+    // If feedback is already visible and user clicks Next, hide feedback and navigate
+    if (trainerFeedback && !trainerFeedback.classList.contains('hidden') && !forceNavigate) {
+        console.log('Feedback visible, hiding and navigating');
+        // User wants to navigate - hide feedback first
+        trainerFeedback.classList.add('hidden');
+        // Clear visual feedback marks
+        const question = allQuestions[currentQuestionIndex];
+        if (question) {
+            question.querySelectorAll('.answer-feedback').forEach(el => el.remove());
+            question.querySelectorAll('.radio-label, .choice, select').forEach(el => {
+                el.classList.remove('answer-correct', 'answer-incorrect');
+            });
+        }
+        // Continue with navigation using forceNavigate to bypass trainer check
+        return navigateQuestion(direction, isSkip, true);
+    }
+    
+    console.log('Checking trainer mode:', { 
+        isSkip, 
+        forceNavigate, 
+        trainerModeActive, 
+        direction, 
+        shouldCheck: !isSkip && !forceNavigate && trainerModeActive && direction > 0 
+    });
+    
+    if (!isSkip && !forceNavigate && trainerModeActive && direction > 0) {
+        // Check if question has been answered before checking
+        const questionNum = currentQuestionIndex + 1;
+        const question = allQuestions[currentQuestionIndex];
+        const form = document.getElementById('testForm');
+        let hasAnswer = false;
+        
+        if (question) {
+            // FIRST: Check directly in form by name pattern (MOST RELIABLE for nested selects like q12, q14, etc.)
+            // This works even if selects are deeply nested in code snippets
+            // Do this FIRST before querySelector to ensure we catch nested selects
+            // NOTE: We trust that question names are unique, so we don't need to check question.contains()
+            const questionKey = `q${questionNum}`;
+            if (form) {
+                let foundAnySelect = false;
+                for (let i = 1; i <= 10; i++) {
+                    const selectByName = form.querySelector(`select[name="${questionKey}_${i}"]`);
+                    if (selectByName) {
+                        foundAnySelect = true;
+                        const val = selectByName.value;
+                        const isValid = val && 
+                               val !== '' && 
+                               val !== '--- Select ---' &&
+                               val !== '---' &&
+                               val !== '--- Select Window Type ---' &&
+                               val !== '--- Select Operator ---' &&
+                               val !== '--- Select Option ---';
+                        console.log(`Question ${questionNum} - Checking select ${questionKey}_${i}: value="${val}", isValid=${isValid}`);
+                        if (isValid) {
+                            console.log(`Question ${questionNum} - ✅ Found VALID select by name: ${questionKey}_${i} = "${val}"`);
+                            hasAnswer = true;
+                            break; // Found at least one, that's enough
+                        }
+                    }
+                }
+                if (!foundAnySelect) {
+                    console.log(`Question ${questionNum} - No selects found with name pattern ${questionKey}_1 to ${questionKey}_10`);
+                }
+            } else {
+                console.log(`Question ${questionNum} - Form not found!`);
+            }
+            
+            // SECOND: Check for radio buttons and checkboxes
+            const checkedRadio = question.querySelector('input[type="radio"]:checked');
+            const checkedCheckbox = question.querySelector('input[type="checkbox"]:checked');
+            
+            // THIRD: Check for selects via querySelector (fallback)
+            let selects = question.querySelectorAll('select');
+            console.log(`Question ${questionNum} - Found ${selects.length} selects via querySelector`);
+            
+            console.log(`Question ${questionNum} - Found ${selects.length} selects in question, ${checkedRadio ? 1 : 0} radios, ${checkedCheckbox ? 1 : 0} checkboxes`);
+            
+            if (selects.length > 0 && !hasAnswer) {
+                // Check if at least one select has a valid value
+                // For trainer mode, we want to show feedback if ANY part is answered
+                const validSelects = Array.from(selects).filter(select => {
+                    const val = select.value;
+                    const isValid = val && 
+                           val !== '' && 
+                           val !== '--- Select ---' &&
+                           val !== '---' &&
+                           val !== '--- Select Window Type ---' &&
+                           val !== '--- Select Operator ---' &&
+                           val !== '--- Select Option ---';
+                    if (!isValid && val) {
+                        console.log(`Select ${select.name || 'unnamed'} has invalid value: "${val}"`);
+                    }
+                    return isValid;
+                });
+                
+                console.log(`Question ${questionNum} - Valid selects from querySelector: ${validSelects.length} out of ${selects.length}`);
+                
+                // If there's at least one valid select, we have an answer to check
+                hasAnswer = validSelects.length > 0;
+            } else if (!hasAnswer) {
+                // For radio/checkbox questions, just check if any is selected
+                hasAnswer = !!(checkedRadio || checkedCheckbox);
+            }
+            
+            console.log(`Question ${questionNum} - hasAnswer check:`, {
+                checkedRadio: !!checkedRadio,
+                checkedCheckbox: !!checkedCheckbox,
+                selectsCount: selects.length,
+                validSelectsCount: selects.length > 0 ? Array.from(selects).filter(s => {
+                    const val = s.value;
+                    return val && val !== '' && val !== '--- Select ---' && val !== '---' &&
+                           val !== '--- Select Window Type ---' && val !== '--- Select Operator ---' &&
+                           val !== '--- Select Option ---';
+                }).length : 0,
+                hasAnswer: hasAnswer,
+                selectValues: selects.length > 0 ? Array.from(selects).map(s => s.value) : []
+            });
+        }
+        
+        // Only check and show feedback if question has been answered
+        if (hasAnswer) {
+            console.log(`Question ${questionNum} - hasAnswer is TRUE, calling checkSingleQuestion`);
+            try {
+                const result = checkSingleQuestion(currentQuestionIndex);
+                console.log(`Question ${questionNum} - checkSingleQuestion returned:`, result);
+                
+                // Show feedback if we have a valid result
+                // Always show feedback if we detected an answer and got a result
+                if (result) {
+                    // Only skip if explicitly says "No answer detected"
+                    const answerText = result.answer || '';
+                    const isTrulyEmpty = answerText.toLowerCase().includes('no answer detected');
+                    
+                    console.log(`Question ${questionNum} - Result check: answerText="${answerText}", isTrulyEmpty=${isTrulyEmpty}`);
+                    
+                    if (!isTrulyEmpty) {
+                        console.log(`Question ${questionNum} - About to call showTrainerFeedback`);
+                        // Show feedback (for both correct and incorrect answers)
+                        showTrainerFeedback(currentQuestionIndex, result);
+                        console.log(`Question ${questionNum} - showTrainerFeedback called, should be visible now`);
+                        
+                        // Don't navigate yet - wait for user to see feedback and click Continue
+                        return;
+                    } else {
+                        console.log(`Question ${questionNum} - Answer is truly empty, allowing navigation`);
+                    }
+                } else {
+                    console.log(`Question ${questionNum} - No result returned from checkSingleQuestion, allowing navigation`);
+                }
+            } catch (error) {
+                console.error(`Error checking question ${questionNum}:`, error);
+                console.error('Error stack:', error.stack);
+                // If there's an error, allow navigation anyway
+            }
+        } else {
+            console.log(`Question ${questionNum} - No answer detected (hasAnswer=${hasAnswer}), allowing navigation`);
+            console.log(`Question ${questionNum} - DEBUG: question element exists:`, !!question);
+            if (question && form) {
+                // Last resort: try to find ANY input with a value in this question
+                const allInputs = question.querySelectorAll('input, select');
+                console.log(`Question ${questionNum} - All inputs in question:`, Array.from(allInputs).map(el => ({
+                    type: el.type || el.tagName,
+                    name: el.name,
+                    value: el.value,
+                    checked: el.checked
+                })));
+            }
+        }
+        // If no answer detected or error, allow navigation (skip trainer feedback)
+    }
+    
+    // Hide feedback if visible (when navigating normally)
+    if (trainerFeedback) {
+        trainerFeedback.classList.add('hidden');
+    }
+    
+    const newIndex = currentQuestionIndex + direction;
+    
+    if (newIndex < 0 || newIndex >= allQuestions.length) {
+        return;
+    }
+    
+    // Hide current question
+    if (allQuestions[currentQuestionIndex]) {
+        allQuestions[currentQuestionIndex].classList.remove('question-active');
+        allQuestions[currentQuestionIndex].style.display = 'none';
+    }
+    
+    // Update index
+    currentQuestionIndex = newIndex;
+    
+    // Show new question
+    if (allQuestions[currentQuestionIndex]) {
+        allQuestions[currentQuestionIndex].classList.add('question-active');
+        allQuestions[currentQuestionIndex].style.display = 'block';
+    }
+    
+    // Update navigation buttons
+    updateNavigationButtons();
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Update progress (this calls saveProgress internally)
+    if (typeof updateProgress === 'function') {
+        updateProgress();
+    }
+    
+    // Explicitly save progress after navigation to ensure currentQuestionIndex is saved
+    if (typeof saveProgress === 'function') {
+        saveProgress();
+    }
+};
+
+// Update navigation buttons state
+function updateNavigationButtons() {
+    allQuestions.forEach((question, index) => {
+        const backBtn = question.querySelector('.nav-btn-back');
+        if (backBtn) {
+            backBtn.disabled = index === 0;
+        }
+    });
+}
+
+// Check single question - uses the full checkAnswers logic but only returns one result
+function checkSingleQuestion(questionIndex) {
+    // Make sure allQuestions is initialized
+    if (!allQuestions || allQuestions.length === 0) {
+        const form = document.getElementById('testForm');
+        if (form) {
+            allQuestions = Array.from(form.querySelectorAll('.question'));
+        }
+    }
+    
+    // Temporarily call checkAnswers and find our specific question
+    const allResults = checkAnswers();
+    const questionNum = questionIndex + 1;
+    const result = allResults.results.find(r => r.questionNum === questionNum);
+    
+    if (!result) {
+        // Fallback for questions not in results (shouldn't happen)
+        const questionKey = `q${questionNum}`;
+        return {
+            questionNum: questionNum,
+            questionText: questionTexts[questionKey] || `Question ${questionNum}`,
+            correct: false,
+            answer: 'No answer detected',
+            correctAnswer: 'Unable to determine'
+        };
+    }
+    
+    return result;
+}
+
+// Mark visual feedback on inputs
+function markQuestionVisualFeedback(questionIndex, result) {
+    const questionNum = questionIndex + 1;
+    const question = allQuestions[questionIndex];
+    if (!question) return;
+    
+    // Remove any existing visual feedback
+    question.querySelectorAll('.answer-feedback').forEach(el => el.remove());
+    question.querySelectorAll('.radio-label').forEach(label => {
+        label.classList.remove('answer-correct', 'answer-incorrect');
+    });
+    question.querySelectorAll('.choice').forEach(choice => {
+        choice.classList.remove('answer-correct', 'answer-incorrect');
+    });
+    question.querySelectorAll('select').forEach(select => {
+        select.classList.remove('answer-correct', 'answer-incorrect');
+    });
+    
+    // Check if this is a multi-part True/False question
+    const questionKey = `q${questionNum}`;
+    const part1Key = `${questionKey}_1`;
+    const part2Key = `${questionKey}_2`;
+    
+    if (correctAnswers[part1Key] && correctAnswers[part2Key]) {
+        // Multi-part question (could be True/False with radios, or dropdowns with selects)
+        const parts = [];
+        let partNum = 1;
+        while (correctAnswers[`${questionKey}_${partNum}`] !== undefined) {
+            parts.push(`${questionKey}_${partNum}`);
+            partNum++;
+        }
+        
+        // Mark each part
+        parts.forEach(name => {
+            const correctValue = correctAnswers[name];
+            
+            // Try select first (for questions like q12, q14 with dropdowns)
+            const userSelect = question.querySelector(`select[name="${name}"]`);
+            if (userSelect) {
+                // It's a select dropdown
+                const userValue = userSelect.value;
+                const isCorrect = userValue === correctValue;
+                userSelect.classList.add(isCorrect ? 'answer-correct' : 'answer-incorrect');
+            } else {
+                // It's a radio button
+                const userInput = question.querySelector(`input[name="${name}"]:checked`);
+                if (userInput) {
+                    const userValue = userInput.value;
+                    const isCorrect = userValue === correctValue;
+                    const label = userInput.closest('.radio-label');
+                    
+                    if (label) {
+                        label.classList.add(isCorrect ? 'answer-correct' : 'answer-incorrect');
+                        
+                        // Add checkmark or X
+                        const feedback = document.createElement('span');
+                        feedback.className = `answer-feedback ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+                        feedback.textContent = isCorrect ? '✓' : '✗';
+                        label.appendChild(feedback);
+                    }
+                    
+                    // Also mark the correct answer if user got it wrong
+                    if (!isCorrect) {
+                        try {
+                            const correctInput = question.querySelector(`input[name="${name}"][value="${CSS.escape(correctValue)}"]`);
+                            if (correctInput && correctInput !== userInput) {
+                                const correctLabel = correctInput.closest('.radio-label');
+                                if (correctLabel) {
+                                    correctLabel.classList.add('answer-correct');
+                                    const correctFeedback = document.createElement('span');
+                                    correctFeedback.className = 'answer-feedback feedback-correct';
+                                    correctFeedback.textContent = '✓';
+                                    correctLabel.appendChild(correctFeedback);
+                                }
+                            }
+                        } catch (e) {
+                            console.warn(`Could not mark correct answer for ${name}:`, e);
+                        }
+                    }
+                } else {
+                    // No answer selected - mark correct one for radio buttons only
+                    try {
+                        const correctInput = question.querySelector(`input[name="${name}"][value="${CSS.escape(correctValue)}"]`);
+                        if (correctInput) {
+                            const correctLabel = correctInput.closest('.radio-label');
+                            if (correctLabel) {
+                                correctLabel.classList.add('answer-correct');
+                                const correctFeedback = document.createElement('span');
+                                correctFeedback.className = 'answer-feedback feedback-correct';
+                                correctFeedback.textContent = '✓';
+                                correctLabel.appendChild(correctFeedback);
+                            }
+                        }
+                    } catch (e) {
+                        // Silently fail if querySelector fails (e.g., for selects or invalid values)
+                    }
+                }
+            }
+        });
+    } else {
+        // For other question types (single answer), mark based on result
+        const correctAnswer = correctAnswers[`${questionKey}_1`] || correctAnswers[questionKey];
+        
+        if (Array.isArray(correctAnswer)) {
+            // Multiple correct answers (checkboxes)
+            question.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                const name = checkbox.name;
+                const value = checkbox.value;
+                const shouldBeChecked = correctAnswer.includes(value);
+                const isChecked = checkbox.checked;
+                
+                if (name.startsWith(questionKey)) {
+                    const choice = checkbox.closest('.choice');
+                    if (choice) {
+                        if (shouldBeChecked && isChecked) {
+                            choice.classList.add('answer-correct');
+                        } else if (shouldBeChecked && !isChecked) {
+                            choice.classList.add('answer-correct');
+                        } else if (!shouldBeChecked && isChecked) {
+                            choice.classList.add('answer-incorrect');
+                        }
+                    }
+                }
+            });
+        } else {
+            // Single answer (radio or select)
+            const userInput = question.querySelector(`input[name="${questionKey}"]:checked`) || 
+                            question.querySelector(`select[name="${questionKey}"]`);
+            
+            if (userInput) {
+                const userValue = userInput.value || userInput.options[userInput.selectedIndex]?.value;
+                const isCorrect = userValue === correctAnswer;
+                
+                if (userInput.type === 'radio') {
+                    const label = userInput.closest('.radio-label') || userInput.closest('.choice');
+                    if (label) {
+                        label.classList.add(isCorrect ? 'answer-correct' : 'answer-incorrect');
+                        const feedback = document.createElement('span');
+                        feedback.className = `answer-feedback ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+                        feedback.textContent = isCorrect ? '✓' : '✗';
+                        label.appendChild(feedback);
+                    }
+                } else if (userInput.tagName === 'SELECT') {
+                    userInput.classList.add(isCorrect ? 'answer-correct' : 'answer-incorrect');
+                }
+                
+                // Mark correct answer if wrong (only for radio buttons, not selects)
+                if (!isCorrect && userInput.type === 'radio') {
+                    try {
+                        const correctInput = question.querySelector(`input[name="${questionKey}"][value="${CSS.escape(correctAnswer)}"]`);
+                        if (correctInput && correctInput !== userInput) {
+                            const correctLabel = correctInput.closest('.radio-label') || correctInput.closest('.choice');
+                            if (correctLabel) {
+                                correctLabel.classList.add('answer-correct');
+                                const correctFeedback = document.createElement('span');
+                                correctFeedback.className = 'answer-feedback feedback-correct';
+                                correctFeedback.textContent = '✓';
+                                correctLabel.appendChild(correctFeedback);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn(`Could not mark correct answer for ${questionKey}:`, e);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Show trainer feedback
+function showTrainerFeedback(questionIndex, result = null) {
+    console.log('showTrainerFeedback called:', { questionIndex, result });
+    
+    if (!result) {
+        result = checkSingleQuestion(questionIndex);
+        console.log('Result from checkSingleQuestion:', result);
+    }
+    
+    if (!result) {
+        console.log('No result, returning early');
+        return;
+    }
+    
+    console.log('About to display feedback for question:', questionIndex + 1);
+    
+    // Mark visual feedback on the question
+    markQuestionVisualFeedback(questionIndex, result);
+    
+    const trainerFeedback = document.getElementById('trainerFeedback');
+    const trainerFeedbackContent = document.getElementById('trainerFeedbackContent');
+    
+    const questionKey = `q${questionIndex + 1}`;
+    const explanation = questionExplanations[questionKey] || questionExplanations.default;
+    
+    const statusClass = result.correct ? 'correct' : 'incorrect';
+    const statusText = result.correct ? '✓ Correct' : '✗ Incorrect';
+    const statusMsg = result.correct ? 
+        (currentLanguage === 'en' ? 'Great job! You got it right!' : '¡Excelente! ¡Lo hiciste bien!') :
+        (currentLanguage === 'en' ? 'Not quite right. Here\'s what went wrong:' : 'No es correcto. Esto es lo que falló:');
+    
+    // Check if this question has visual feedback (multi-part True/False)
+    const questionNum = questionIndex + 1;
+    const hasVisualFeedback = correctAnswers[`q${questionNum}_1`] && correctAnswers[`q${questionNum}_2`];
+    
+    // For questions with visual feedback, don't show any textual feedback
+    // The visual feedback (green/red colors and ✓/✗) is sufficient
+    const showTextFeedback = !hasVisualFeedback;
+    
+    let feedbackDetailsHtml = '';
+    if (showTextFeedback) {
+        // Only show textual feedback for non-visual questions (like dropdowns, single choice)
+        feedbackDetailsHtml = `
+            <div class="feedback-details">
+                <p><strong>${currentLanguage === 'en' ? 'Your answer:' : 'Tu respuesta:'}</strong> ${result.answer}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Correct answer:' : 'Respuesta correcta:'}</strong> ${result.correctAnswer}</p>
+            </div>
+        `;
+    }
+    // For visual feedback questions: no textual feedback, only visual (colors and symbols)
+    
+    trainerFeedbackContent.innerHTML = `
+        <div class="feedback-status ${statusClass}">
+            <h3>${statusText}</h3>
+            <p>${statusMsg}</p>
+        </div>
+        ${feedbackDetailsHtml}
+        <div class="feedback-explanation">
+            <h4>${currentLanguage === 'en' ? 'Explanation:' : 'Explicación:'}</h4>
+            <p>${currentLanguage === 'en' ? explanation.en : explanation.es}</p>
+        </div>
+        <div class="feedback-continue">
+            <button type="button" id="feedbackContinueBtn" class="nav-btn nav-btn-next" style="width: 100%; margin-top: 15px;">
+                ${currentLanguage === 'en' ? 'Continue to Next Question →' : 'Continuar a Siguiente Pregunta →'}
+            </button>
+        </div>
+    `;
+    
+    // Add event listener to continue button
+    const continueBtn = trainerFeedbackContent.querySelector('#feedbackContinueBtn');
+    if (continueBtn) {
+        continueBtn.addEventListener('click', () => {
+            // Clear visual feedback before navigating
+            const question = allQuestions[questionIndex];
+            if (question) {
+                question.querySelectorAll('.answer-feedback').forEach(el => el.remove());
+                question.querySelectorAll('.radio-label, .choice, select').forEach(el => {
+                    el.classList.remove('answer-correct', 'answer-incorrect');
+                });
+            }
+            // Force navigation without checking trainer mode again
+            navigateQuestion(1, false, true);
+        });
+    }
+    
+    console.log('Removing hidden class from trainerFeedback');
+    trainerFeedback.classList.remove('hidden');
+    console.log('Feedback should now be visible. Hidden?', trainerFeedback.classList.contains('hidden'));
+    trainerFeedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Submit test function
+window.submitTest = function() {
+    const form = document.getElementById('testForm');
+    form.dispatchEvent(new Event('submit'));
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('testForm');
     const resultsDiv = document.getElementById('results');
     const resultsContent = document.getElementById('results-content');
     const retryBtn = document.getElementById('retry-btn');
     const darkModeToggle = document.getElementById('darkModeToggle');
+    
+    // Trainer Mode elements
+    const trainerMode = document.getElementById('trainerMode');
+    const trainerFeedback = document.getElementById('trainerFeedback');
+    const trainerFeedbackContent = document.getElementById('trainerFeedbackContent');
+    const toggleLanguage = document.getElementById('toggleLanguage');
     
     // Initial modal elements
     const initialModal = document.getElementById('initialModal');
@@ -383,63 +986,345 @@ document.addEventListener('DOMContentLoaded', function() {
     let timerInterval = null;
     let timeRemaining = 0;
     let timerActive = false;
+    
+    // Initialize question navigation
+    allQuestions = Array.from(form.querySelectorAll('.question'));
+    
+    // Check for saved progress FIRST - before initializing question visibility
+    const savedData = loadProgress();
+    console.log('Loaded progress at init:', savedData);
+    console.log('Answers found:', savedData ? Object.keys(savedData.answers || {}).length : 0);
+    console.log('Current question index:', savedData ? savedData.currentQuestionIndex : 'none');
+    
+    // Add navigation buttons and data-question-num to all questions
+    allQuestions.forEach((question, index) => {
+        const questionNum = index + 1;
+        question.setAttribute('data-question-num', questionNum);
+        
+        // Only initialize visibility if NO saved progress (will be handled by resume if exists)
+        // If saved progress exists, we'll restore visibility when resuming
+        if (!savedData || !savedData.answers || Object.keys(savedData.answers).length === 0) {
+            // Hide all questions except first
+            if (index !== 0) {
+                question.classList.remove('question-active');
+                question.style.display = 'none';
+            } else {
+                question.classList.add('question-active');
+                question.style.display = 'block';
+            }
+        } else {
+            // If saved progress exists, hide all questions initially (will be restored on resume)
+            question.classList.remove('question-active');
+            question.style.display = 'none';
+        }
+        
+        // Check if navigation buttons already exist
+        if (!question.querySelector('.question-navigation')) {
+            const navDiv = document.createElement('div');
+            navDiv.className = 'question-navigation';
+            
+            const isFirst = index === 0;
+            const isLast = index === allQuestions.length - 1;
+            
+            // Create Back button
+            const backBtn = document.createElement('button');
+            backBtn.type = 'button';
+            backBtn.className = 'nav-btn nav-btn-back';
+            backBtn.textContent = '← Back';
+            backBtn.disabled = isFirst;
+            backBtn.addEventListener('click', () => navigateQuestion(-1));
+            navDiv.appendChild(backBtn);
+            
+            // Create Skip button
+            const skipBtn = document.createElement('button');
+            skipBtn.type = 'button';
+            skipBtn.className = 'nav-btn nav-btn-skip';
+            skipBtn.textContent = 'Skip';
+            skipBtn.addEventListener('click', () => navigateQuestion(1, true));
+            navDiv.appendChild(skipBtn);
+            
+            // Create Next or Submit button
+            if (isLast) {
+                const submitBtn = document.createElement('button');
+                submitBtn.type = 'button';
+                submitBtn.className = 'nav-btn nav-btn-submit';
+                submitBtn.textContent = 'Submit Test';
+                submitBtn.addEventListener('click', () => submitTest());
+                navDiv.appendChild(submitBtn);
+            } else {
+                const nextBtn = document.createElement('button');
+                nextBtn.type = 'button';
+                nextBtn.className = 'nav-btn nav-btn-next';
+                nextBtn.textContent = 'Next →';
+                nextBtn.addEventListener('click', () => navigateQuestion(1));
+                navDiv.appendChild(nextBtn);
+            }
+            
+            question.appendChild(navDiv);
+        }
+    });
+    
+    // Trainer Mode toggle
+    trainerMode.addEventListener('change', function() {
+        trainerModeActive = this.checked;
+        console.log('Trainer Mode toggled:', trainerModeActive);
+        if (!trainerModeActive) {
+            trainerFeedback.classList.add('hidden');
+        }
+    });
+    
+    // Language toggle
+    toggleLanguage.addEventListener('click', function() {
+        currentLanguage = currentLanguage === 'en' ? 'es' : 'en';
+        this.textContent = currentLanguage === 'en' ? 'Read in Spanish' : 'Leer en Inglés';
+        // Update current feedback if visible
+        if (!trainerFeedback.classList.contains('hidden')) {
+            showTrainerFeedback(currentQuestionIndex);
+        }
+    });
 
-    // Check for saved progress
-    const savedAnswers = loadProgress();
-    if (savedAnswers && Object.keys(savedAnswers).length > 0) {
+    // Show modal if we have saved progress (answers OR currentQuestionIndex > 0)
+    // savedData was already loaded above, before initializing question visibility
+    // This way even if no answers yet, if user was on question 5, we can resume
+    if (savedData && (
+        (savedData.answers && Object.keys(savedData.answers).length > 0) || 
+        (savedData.currentQuestionIndex !== undefined && savedData.currentQuestionIndex > 0)
+    )) {
+        console.log('Showing resume modal - progress found');
         initialModal.classList.remove('hidden');
     } else {
+        console.log('No saved progress, hiding modal and starting fresh');
         initialModal.classList.add('hidden');
+        // First question is already visible from initialization above
+        currentQuestionIndex = 0;
+        updateNavigationButtons();
     }
 
     // Resume test
     resumeTestBtn.addEventListener('click', function() {
-        if (savedAnswers) {
-            // Restore answers
-            Object.keys(savedAnswers).forEach(name => {
-                const value = savedAnswers[name];
-                if (Array.isArray(value)) {
-                    // Checkbox values
-                    value.forEach(val => {
-                        const input = form.querySelector(`input[name="${name}"][value="${val}"]`);
-                        if (input) input.checked = true;
+        console.log('Resume button clicked');
+        // Reload saved data in case it changed
+        const currentSavedData = loadProgress();
+        console.log('Reloaded data for resume:', currentSavedData);
+        
+        // Ensure allQuestions is initialized
+        if (!allQuestions || allQuestions.length === 0) {
+            allQuestions = Array.from(form.querySelectorAll('.question'));
+            console.log('Initialized allQuestions for resume:', allQuestions.length);
+        }
+        
+        // Hide modal immediately to prevent user confusion
+        initialModal.classList.add('hidden');
+        
+        if (currentSavedData && (currentSavedData.answers || (currentSavedData.currentQuestionIndex !== undefined && currentSavedData.currentQuestionIndex > 0))) {
+            // First, randomize questions BEFORE restoring answers
+            randomizeQuestions();
+            
+            // Wait a bit for DOM to update, then restore answers
+            setTimeout(() => {
+                // Re-initialize allQuestions after randomization (may have changed DOM)
+                allQuestions = Array.from(form.querySelectorAll('.question'));
+                console.log('Re-initialized allQuestions after randomization:', allQuestions.length);
+                
+                // First, ensure ALL questions are hidden
+                allQuestions.forEach((q) => {
+                    q.classList.remove('question-active');
+                    q.style.display = 'none';
+                });
+                // Restore answers first (if any exist)
+                if (currentSavedData.answers && Object.keys(currentSavedData.answers).length > 0) {
+                    Object.keys(currentSavedData.answers).forEach(name => {
+                        const value = currentSavedData.answers[name];
+                        if (Array.isArray(value)) {
+                            // Checkbox values
+                            value.forEach(val => {
+                                // For checkboxes, we can safely use querySelector with value
+                                try {
+                                    const input = form.querySelector(`input[name="${name}"][value="${CSS.escape(val)}"]`);
+                                    if (input) input.checked = true;
+                                } catch (e) {
+                                    console.warn(`Could not restore checkbox ${name}="${val}":`, e);
+                                }
+                            });
+                        } else {
+                            // Check if this is likely a select (has special characters like parentheses, quotes)
+                            // For selects, find by name and set value directly (safer for special characters)
+                            const selectInput = form.querySelector(`select[name="${name}"]`);
+                            if (selectInput) {
+                                // This is a select - set value directly (handles special characters safely)
+                                selectInput.value = value;
+                                console.log(`Restored select: ${name} = ${value}`);
+                            } else {
+                                // Try radio button - use querySelector with escaped value
+                                try {
+                                    const radioInput = form.querySelector(`input[name="${name}"][value="${CSS.escape(value)}"]`);
+                                    if (radioInput) {
+                                        radioInput.checked = true;
+                                        console.log(`Restored radio: ${name} = ${value}`);
+                                    } else {
+                                        console.warn(`Could not find element to restore ${name} = ${value}`);
+                                    }
+                                } catch (e) {
+                                    console.warn(`Error restoring ${name} = ${value}:`, e);
+                                }
+                            }
+                        }
                     });
                 } else {
-                    // Radio or select
-                    const input = form.querySelector(`input[name="${name}"][value="${value}"]`) || 
-                                 form.querySelector(`select[name="${name}"]`);
-                    if (input) {
-                        if (input.type === 'radio') {
-                            input.checked = true;
-                        } else if (input.tagName === 'SELECT') {
-                            input.value = value;
-                        }
-                    }
+                    console.log('No answers to restore, just restoring question index');
                 }
+                
+                // Restore current question index - MUST be done after restoring answers
+                if (currentSavedData.currentQuestionIndex !== undefined) {
+                    const savedIndex = currentSavedData.currentQuestionIndex;
+                    
+                    console.log(`Attempting to restore to question ${savedIndex}, allQuestions length: ${allQuestions.length}`);
+                    
+                    // Validate index
+                    if (savedIndex >= 0 && savedIndex < allQuestions.length) {
+                        // Hide ALL questions first
+                        allQuestions.forEach((q) => {
+                            q.classList.remove('question-active');
+                            q.style.display = 'none';
+                        });
+                        
+                        // Set global index BEFORE showing question
+                        currentQuestionIndex = savedIndex;
+                        
+                        // Show saved question
+                        if (allQuestions[currentQuestionIndex]) {
+                            allQuestions[currentQuestionIndex].classList.add('question-active');
+                            allQuestions[currentQuestionIndex].style.display = 'block';
+                            console.log(`✅ Successfully restored to question ${currentQuestionIndex}`);
+                        } else {
+                            console.error(`❌ Question ${currentQuestionIndex} not found in allQuestions!`);
+                        }
+                        
+                        updateNavigationButtons();
+                    } else {
+                        console.warn(`Invalid saved index ${savedIndex}, going to first question`);
+                        // Invalid index, go to first question
+                        currentQuestionIndex = 0;
+                        if (allQuestions[0]) {
+                            allQuestions[0].classList.add('question-active');
+                            allQuestions[0].style.display = 'block';
+                        }
+                        updateNavigationButtons();
+                    }
+                } else {
+                    console.log('No saved index, going to first question');
+                    // No saved index, start at first question
+                    currentQuestionIndex = 0;
+                    if (allQuestions[0]) {
+                        allQuestions[0].classList.add('question-active');
+                        allQuestions[0].style.display = 'block';
+                    }
+                    updateNavigationButtons();
+                }
+                
+                // Update progress and save again to ensure consistency
+                updateProgress();
+                saveProgress();
+                
+                console.log('Resume complete - current question:', currentQuestionIndex);
+                
+                // Scroll to top to show the restored question
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 150);
+        } else {
+            console.log('No valid saved data found for resume');
+            // If no saved data, still show first question
+            if (!allQuestions || allQuestions.length === 0) {
+                allQuestions = Array.from(form.querySelectorAll('.question'));
+            }
+            // Hide all questions first
+            allQuestions.forEach((q) => {
+                q.classList.remove('question-active');
+                q.style.display = 'none';
             });
-            updateProgress();
+            // Show first question
+            currentQuestionIndex = 0;
+            if (allQuestions[0]) {
+                allQuestions[0].classList.add('question-active');
+                allQuestions[0].style.display = 'block';
+            }
+            updateNavigationButtons();
         }
-        initialModal.classList.add('hidden');
     });
 
     // New test
     newTestBtn.addEventListener('click', function() {
         clearProgress();
         form.reset();
+        currentQuestionIndex = 0;
+        
+        // Reset to first question
+        allQuestions.forEach((q, idx) => {
+            if (idx !== 0) {
+                q.classList.remove('question-active');
+                q.style.display = 'none';
+            } else {
+                q.classList.add('question-active');
+                q.style.display = 'block';
+            }
+        });
+        
+        updateNavigationButtons();
         updateProgress();
         initialModal.classList.add('hidden');
         randomizeQuestions();
     });
+    
+    // Restart Test button
+    const restartTestBtn = document.getElementById('restartTestBtn');
+    if (restartTestBtn) {
+        restartTestBtn.addEventListener('click', function() {
+            if (confirm(currentLanguage === 'en' ? 'Are you sure you want to restart the test? All progress will be lost.' : '¿Estás seguro de que quieres reiniciar el test? Todo el progreso se perderá.')) {
+                clearProgress();
+                form.reset();
+                currentQuestionIndex = 0;
+                
+                // Reset to first question
+                allQuestions.forEach((q, idx) => {
+                    if (idx !== 0) {
+                        q.classList.remove('question-active');
+                        q.style.display = 'none';
+                    } else {
+                        q.classList.add('question-active');
+                        q.style.display = 'block';
+                    }
+                });
+                
+                // Hide feedback
+                trainerFeedback.classList.add('hidden');
+                
+                updateNavigationButtons();
+                updateProgress();
+                randomizeQuestions();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    }
 
-    // Randomize questions on load
-    randomizeQuestions();
+    // Randomize questions on load (but NOT if resuming - will randomize after restore)
+    // Only randomize if there's NO saved progress
+    if (!savedData || !savedData.answers || Object.keys(savedData.answers).length === 0) {
+        console.log('No saved progress - randomizing questions');
+        randomizeQuestions();
+    } else {
+        console.log('Saved progress exists - skipping initial randomization');
+    }
     
     // Update progress on any input change
     form.addEventListener('change', updateProgress);
     form.addEventListener('input', updateProgress);
     
-    // Initial progress update
-    setTimeout(updateProgress, 100);
+    // Initial progress update - only if NOT resuming
+    if (!savedData || !savedData.answers || Object.keys(savedData.answers).length === 0) {
+        setTimeout(updateProgress, 100);
+    }
 
     // Dark mode toggle
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -593,7 +1478,7 @@ document.addEventListener('DOMContentLoaded', function() {
             stopTimer();
         }
         
-        // Clear saved progress after submission
+        // Clear saved progress after submission (already disabled, but ensure it's cleared)
         clearProgress();
         
         const results = checkAnswers();
@@ -628,16 +1513,26 @@ document.addEventListener('DOMContentLoaded', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    function checkAnswers() {
+    window.checkAnswers = function() {
+        const form = document.getElementById('testForm');
+        if (!form) {
+            return { results: [], correctCount: 0, totalQuestions: 0, totalPoints: 0, maxPoints: 0, score: 0 };
+        }
+        
         const results = [];
         let correctCount = 0;
         let totalQuestions = 0;
 
         // Question 1: True/False (3 parts, partial credit)
         totalQuestions++;
-        const q1_1 = form.querySelector('input[name="q1_1"]:checked')?.value;
-        const q1_2 = form.querySelector('input[name="q1_2"]:checked')?.value;
-        const q1_3 = form.querySelector('input[name="q1_3"]:checked')?.value;
+        // Directly query for checked inputs - most reliable method
+        const q1_1_checked = form.querySelector('input[name="q1_1"]:checked');
+        const q1_2_checked = form.querySelector('input[name="q1_2"]:checked');
+        const q1_3_checked = form.querySelector('input[name="q1_3"]:checked');
+        
+        const q1_1 = q1_1_checked ? q1_1_checked.value : null;
+        const q1_2 = q1_2_checked ? q1_2_checked.value : null;
+        const q1_3 = q1_3_checked ? q1_3_checked.value : null;
         
         const q1_1_correct = q1_1 === correctAnswers.q1_1;
         const q1_2_correct = q1_2 === correctAnswers.q1_2;
@@ -655,8 +1550,8 @@ document.addEventListener('DOMContentLoaded', function() {
             totalParts: 3,
             points: Math.round(q1_points),
             maxPoints: 1000,
-            answer: `A: ${q1_1 || 'No answer'}, B: ${q1_2 || 'No answer'}, C: ${q1_3 || 'No answer'}`,
-            correctAnswer: `A: ${correctAnswers.q1_1}, B: ${correctAnswers.q1_2}, C: ${correctAnswers.q1_3}`
+            answer: `Part A: ${q1_1 || 'No answer'}, Part B: ${q1_2 || 'No answer'}, Part C: ${q1_3 || 'No answer'}`,
+            correctAnswer: `Part A: ${correctAnswers.q1_1}, Part B: ${correctAnswers.q1_2}, Part C: ${correctAnswers.q1_3}`
         });
         
         // Add points to total (for partial credit, add proportional points)

@@ -23,6 +23,13 @@
         <div class="header-controls">
             <h1>Unity Coding Test</h1>
             <div class="header-right">
+                <button type="button" id="restartTestBtn" class="restart-btn" title="Restart Test">
+                    ↻ Restart
+                </button>
+                <label class="trainer-mode-label">
+                    <input type="checkbox" id="trainerMode" />
+                    <span>Trainer Mode</span>
+                </label>
                 <div class="timer-container">
                     <label class="timer-toggle-label">
                         <input type="checkbox" id="timerEnabled" />
@@ -45,9 +52,17 @@
             <span id="progressText" class="progress-text">0/38 questions answered</span>
         </div>
         
+        <!-- Trainer Mode Feedback Area -->
+        <div id="trainerFeedback" class="trainer-feedback hidden">
+            <div id="trainerFeedbackContent"></div>
+            <div class="language-toggle">
+                <button type="button" id="toggleLanguage" class="language-btn">Read in Spanish</button>
+            </div>
+        </div>
+        
         <form id="testForm">
             <!-- Question 1: True/False about Unity naming conventions -->
-            <div class="question" id="q1">
+            <div class="question question-active" id="q1" data-question-num="1">
                 <div class="question-header">
                     <span class="question-number">Question 1 of 40</span>
                 </div>
@@ -129,7 +144,7 @@ playerLight.enabled = !playerLight.enabled;
             </div>
 
             <!-- Question 2: Multiple choice about Debug.Log -->
-            <div class="question" id="q2">
+            <div class="question" id="q2" data-question-num="2">
                 <div class="question-header">
                     <span class="question-number">Question 2 of 40</span>
                 </div>
@@ -162,7 +177,7 @@ playerLight.enabled = !playerLight.enabled;
             </div>
 
             <!-- Question 3: Fill-in-the-blank with operators -->
-            <div class="question" id="q3">
+            <div class="question" id="q3" data-question-num="3">
                 <div class="question-header">
                     <span class="question-number">Question 3 of 40</span>
                 </div>
