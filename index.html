@@ -1108,21 +1108,18 @@ public class UnlockGate : MonoBehaviour
     private <span class="dropdown-wrapper"><select name="q20_1" class="dropdown" required>
         <option value="">--- Select ---</option>
         <option value="void">void</option>
-        <option value="string">string</option>
-        <option value="int">int</option>
-        <option value="bool">bool</option>
+        <option value="SetMessageToDisplay">SetMessageToDisplay</option>
+        <option value="string stringToDisplay">string stringToDisplay</option>
     </select></span> <span class="dropdown-wrapper"><select name="q20_2" class="dropdown" required>
         <option value="">--- Select ---</option>
+        <option value="void">void</option>
         <option value="SetMessageToDisplay">SetMessageToDisplay</option>
-        <option value="SetMessage ToDisplay">SetMessage ToDisplay</option>
-        <option value="SetMessage">SetMessage</option>
-        <option value="ToDisplay">ToDisplay</option>
+        <option value="string stringToDisplay">string stringToDisplay</option>
     </select></span>(<span class="dropdown-wrapper"><select name="q20_3" class="dropdown" required>
         <option value="">--- Select ---</option>
+        <option value="void">void</option>
+        <option value="SetMessageToDisplay">SetMessageToDisplay</option>
         <option value="string stringToDisplay">string stringToDisplay</option>
-        <option value="string">string</option>
-        <option value="stringToDisplay">stringToDisplay</option>
-        <option value="(string stringToDisplay)">(string stringToDisplay)</option>
     </select></span>)
     {
         textToDisplay.text = stringToDisplay;
@@ -1650,20 +1647,16 @@ public class ExampleClass : MonoBehaviour
                 
                 <div class="code-snippet code-with-dropdowns">
                     <pre><code><span class="dropdown-wrapper"><select name="q29_1" class="dropdown" required>
-    <option value="">--- Select ---</option>
-    <option value="public GameObject projectile;">public GameObject projectile;</option>
-    <option value="Public GameObject projectile;">Public GameObject projectile;</option>
-    <option value="GameObject projectile;">GameObject projectile;</option>
-    <option value="public Rigidbody projectile;">public Rigidbody projectile;</option>
-</select></span>
+        <option value="">--- Select ---</option>
+        <option value="Public GameObject projectile;">Public GameObject projectile;</option>
+        <option value="(projectile == null)">(projectile == null)</option>
+    </select></span>
 void Start ()
 {
     if (<span class="dropdown-wrapper"><select name="q29_2" class="dropdown" required>
         <option value="">--- Select ---</option>
+        <option value="Public GameObject projectile;">Public GameObject projectile;</option>
         <option value="(projectile == null)">(projectile == null)</option>
-        <option value="projectile == null">projectile == null</option>
-        <option value="projectile != null">projectile != null</option>
-        <option value="projectile">projectile</option>
     </select></span>)
     {
         Debug.Log("Object is null");

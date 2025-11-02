@@ -110,9 +110,9 @@ const correctAnswers = {
     q25: ['A', 'D'], // A: dictionary == myInt (type mismatch), D: myFloat <= myString (type mismatch)
     
     // Question 26: ECS True/False
-    q26_1: 'false', // Regular MonoBehaviour, no ECS
-    q26_2: 'false', // Uses Unity.Entities but still MonoBehaviour, not pure ECS
-    q26_3: 'true',  // ComponentSystem is ECS
+    q26_1: 'false', // Fireball - MonoBehaviour, no Unity.Entities - FALSE
+    q26_2: 'true',  // ShieldComponent - Uses Unity.Entities (even though MonoBehaviour, professor considers it ECS) - TRUE
+    q26_3: 'true',  // EnemyMovementSystem - ComponentSystem is ECS - TRUE
     
     // Question 27: Unity naming conventions True/False
     q27_1: 'true',  // Correct Unity naming (PascalCase class, camelCase fields)
@@ -123,7 +123,7 @@ const correctAnswers = {
     q28: 'Rigidbody', // GetComponent<Rigidbody>() returns Rigidbody
     
     // Question 29: GameObject null check
-    q29_1: 'public GameObject projectile;', // Declaration
+    q29_1: 'Public GameObject projectile;', // Declaration (note: capital P as shown in options)
     q29_2: '(projectile == null)', // Null check
     
     // Question 30: Rigidbody.AddForce
